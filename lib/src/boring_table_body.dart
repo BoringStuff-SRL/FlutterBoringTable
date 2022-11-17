@@ -45,7 +45,7 @@ class BoringTableBody extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: ListView.builder(
-        prototypeItem: itemAtPosition(context, 0),
+        prototypeItem: rowCount > 0 ? itemAtPosition(context, 0) : null,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {

@@ -18,12 +18,14 @@ class BoringTable extends StatefulWidget {
       required this.headerRow,
       required this.rowBuilder,
       required this.rowCount,
+      this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
       this.rowActions = const []});
 
   factory BoringTable.fromList(
       {required List<TableHeaderElement> headerRow,
       required List<BoringTableRowElement> items,
+      Widget? widgetWhenEmpty,
       BoringTableTitle? title,
       double? minWidth,
       List<BoringRowAction>? rowActions,
@@ -34,6 +36,7 @@ class BoringTable extends StatefulWidget {
       rowBuilder: (context, index) => items[index].toTableRow(),
       rowCount: items.length,
       onTap: onTap,
+      widgetWhenEmpty: widgetWhenEmpty,
       rowActionsColumnLabel: rowActionsColumnLabel,
       rowActions: rowActions ?? [],
       title: title,
@@ -49,6 +52,7 @@ class BoringTable extends StatefulWidget {
   final double? minWidth;
   final String? rowActionsColumnLabel;
   final List<BoringRowAction> rowActions;
+  final Widget? widgetWhenEmpty;
   //TODO final String? subtitle;
   //TODO final Widget footer;
 
@@ -62,7 +66,7 @@ class _BoringTableState extends State<BoringTable> {
   late ScrollController _first;
   late ScrollController _second;
 
-  double get minWidth => widget.minWidth ?? widget.headerRow.length * 500.0;
+  double get minWidth => widget.minWidth ?? widget.headerRow.length * 200.0;
 
   @override
   void initState() {
@@ -86,7 +90,6 @@ class _BoringTableState extends State<BoringTable> {
         constraints.maxWidth,
         minWidth,
       );
-
       return Card(
         elevation: 8,
         margin: EdgeInsets.zero,
@@ -99,22 +102,24 @@ class _BoringTableState extends State<BoringTable> {
             if (widget.title != null) widget.title!,
             header(maxWidth),
             Expanded(
-              child: Scrollbar(
-                scrollbarOrientation: ScrollbarOrientation.bottom,
-                controller: _second,
-                child: SingleChildScrollView(
-                  controller: _second,
-                  scrollDirection: Axis.horizontal,
-                  child: BoringTableBody(
-                    onTap: widget.onTap,
-                    maxWidth: maxWidth,
-                    rowBuilder: widget.rowBuilder,
-                    headerRow: widget.headerRow,
-                    rowCount: widget.rowCount,
-                    rowActions: widget.rowActions,
-                  ),
-                ),
-              ),
+              child: (widget.rowCount == 0 && widget.widgetWhenEmpty != null)
+                  ? widget.widgetWhenEmpty!
+                  : Scrollbar(
+                      scrollbarOrientation: ScrollbarOrientation.bottom,
+                      controller: _second,
+                      child: SingleChildScrollView(
+                        controller: _second,
+                        scrollDirection: Axis.horizontal,
+                        child: BoringTableBody(
+                          onTap: widget.onTap,
+                          maxWidth: maxWidth,
+                          rowBuilder: widget.rowBuilder,
+                          headerRow: widget.headerRow,
+                          rowCount: widget.rowCount,
+                          rowActions: widget.rowActions,
+                        ),
+                      ),
+                    ),
             ),
             footer()
           ],

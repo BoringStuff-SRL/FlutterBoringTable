@@ -22,27 +22,18 @@ class BoringTable extends StatefulWidget {
       this.rowActionsColumnLabel,
       this.rowActions = const []});
 
-  factory BoringTable.fromList(
-      {required List<TableHeaderElement> headerRow,
+  BoringTable.fromList(
+      {super.key,
+      this.onTap,
+      this.title,
+      this.minWidth,
+      required this.headerRow,
       required List<BoringTableRowElement> items,
-      Widget? widgetWhenEmpty,
-      BoringTableTitle? title,
-      double? minWidth,
-      List<BoringRowAction>? rowActions,
-      String? rowActionsColumnLabel,
-      void Function(int)? onTap}) {
-    return BoringTable(
-      headerRow: headerRow,
-      rowBuilder: (context, index) => items[index].toTableRow(),
-      rowCount: items.length,
-      onTap: onTap,
-      widgetWhenEmpty: widgetWhenEmpty,
-      rowActionsColumnLabel: rowActionsColumnLabel,
-      rowActions: rowActions ?? [],
-      title: title,
-      minWidth: minWidth,
-    );
-  }
+      this.widgetWhenEmpty,
+      this.rowActionsColumnLabel,
+      this.rowActions = const []})
+      : rowBuilder = ((context, index) => items[index].toTableRow()),
+        rowCount = items.length;
 
   final List<TableHeaderElement> headerRow;
   final List<Widget> Function(BuildContext context, int index) rowBuilder;

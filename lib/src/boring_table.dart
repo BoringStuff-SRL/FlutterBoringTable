@@ -20,6 +20,8 @@ class BoringTable extends StatefulWidget {
       required this.rowCount,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
+      this.shape,
+      this.cardElevation,
       this.rowActions = const []});
 
   BoringTable.fromList(
@@ -31,6 +33,8 @@ class BoringTable extends StatefulWidget {
       required List<BoringTableRowElement> items,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
+      this.shape,
+      this.cardElevation,
       this.rowActions = const []})
       : rowBuilder = ((context, index) => items[index].toTableRow()),
         rowCount = items.length;
@@ -44,6 +48,8 @@ class BoringTable extends StatefulWidget {
   final String? rowActionsColumnLabel;
   final List<BoringRowAction> rowActions;
   final Widget? widgetWhenEmpty;
+  final double? cardElevation;
+  final ShapeBorder? shape;
   //TODO final String? subtitle;
   //TODO final Widget footer;
 
@@ -82,12 +88,13 @@ class _BoringTableState extends State<BoringTable> {
         minWidth,
       );
       return Card(
-        elevation: 8,
+        elevation: widget.cardElevation ?? 8,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: widget.shape ??
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
         child: Column(
           children: [
             if (widget.title != null) widget.title!,

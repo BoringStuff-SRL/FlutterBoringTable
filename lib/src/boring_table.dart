@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
 import 'package:boring_table/src/boring_table_body.dart';
+import 'package:boring_table/src/boring_table_decoration.dart';
 import 'package:boring_table/src/boring_table_header.dart';
 import 'package:boring_table/src/boring_table_title.dart';
 import 'package:boring_table/src/sliver_persistent_row.dart';
@@ -15,6 +16,7 @@ class BoringTable extends StatefulWidget {
       this.onTap,
       this.title,
       this.minWidth,
+      this.decoration,
       required this.headerRow,
       required this.rowBuilder,
       required this.rowCount,
@@ -29,6 +31,7 @@ class BoringTable extends StatefulWidget {
       this.onTap,
       this.title,
       this.minWidth,
+      this.decoration,
       required this.headerRow,
       required List<BoringTableRowElement> items,
       this.widgetWhenEmpty,
@@ -36,7 +39,7 @@ class BoringTable extends StatefulWidget {
       this.shape,
       this.cardElevation,
       this.rowActions = const []})
-      : rowBuilder = ((context, index) => items[index].toTableRow()),
+      : rowBuilder = ((context, index)  => items[index].toTableRow()),
         rowCount = items.length;
 
   final List<TableHeaderElement> headerRow;
@@ -50,6 +53,8 @@ class BoringTable extends StatefulWidget {
   final Widget? widgetWhenEmpty;
   final double? cardElevation;
   final ShapeBorder? shape;
+  final BoringTableDecoration? decoration;
+
   //TODO final String? subtitle;
   //TODO final Widget footer;
 
@@ -71,6 +76,9 @@ class _BoringTableState extends State<BoringTable> {
     _controllers = LinkedScrollControllerGroup();
     _first = _controllers.addAndGet();
     _second = _controllers.addAndGet();
+
+
+
   }
 
   @override
@@ -82,6 +90,8 @@ class _BoringTableState extends State<BoringTable> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return LayoutBuilder(builder: (context, constraints) {
       final maxWidth = max(
         constraints.maxWidth,
@@ -101,7 +111,7 @@ class _BoringTableState extends State<BoringTable> {
             header(maxWidth),
             Expanded(
               child: (widget.rowCount == 0 && widget.widgetWhenEmpty != null)
-                  ? widget.widgetWhenEmpty!
+                  ? Center(child: widget.widgetWhenEmpty!)
                   : Scrollbar(
                       scrollbarOrientation: ScrollbarOrientation.bottom,
                       controller: _second,
@@ -109,6 +119,7 @@ class _BoringTableState extends State<BoringTable> {
                         controller: _second,
                         scrollDirection: Axis.horizontal,
                         child: BoringTableBody(
+                          decoration: widget.decoration,
                           onTap: widget.onTap,
                           maxWidth: maxWidth,
                           rowBuilder: widget.rowBuilder,
@@ -132,6 +143,7 @@ class _BoringTableState extends State<BoringTable> {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: BoringTableHeader(
+            decoration: widget.decoration,
             rowHeader: widget.headerRow,
             rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
             rowActions: widget.rowActions,

@@ -2,6 +2,8 @@ import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
 import 'package:flutter/material.dart';
 
+import 'boring_table_decoration.dart';
+
 class BoringTableBody extends StatelessWidget {
   const BoringTableBody(
       {super.key,
@@ -10,6 +12,7 @@ class BoringTableBody extends StatelessWidget {
       required this.rowBuilder,
       required this.headerRow,
       required this.rowCount,
+      this.decoration,
       this.dense = false,
       this.rowActions = const []});
 
@@ -20,6 +23,7 @@ class BoringTableBody extends StatelessWidget {
   final void Function(int)? onTap;
   final List<BoringRowAction> rowActions;
   final bool dense;
+  final BoringTableDecoration? decoration;
 
   List<Widget> buildRow(BuildContext context, int index) =>
       rowBuilder(context, index)
@@ -27,7 +31,7 @@ class BoringTableBody extends StatelessWidget {
           .entries
           .map(
             (item) =>
-                Expanded(flex: headerRow[item.key].flex, child: item.value),
+                Expanded(flex: headerRow[item.key].flex, child: Text('ads')),
           )
           .toList();
 
@@ -55,21 +59,41 @@ class BoringTableBody extends StatelessWidget {
     );
   }
 
-  Widget itemAtPosition(BuildContext context, int index) => InkWell(
-        hoverColor: Theme.of(context).primaryColor.withOpacity(0.2),
-        splashColor: Theme.of(context).primaryColor.withOpacity(0.1),
-        highlightColor: Theme.of(context).primaryColor.withOpacity(0.1),
-        onTap: () => onTap?.call(index),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: 35.0, vertical: dense ? 0 : 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+  Widget itemAtPosition(BuildContext context, int index) {
+    final tx = Theme.of(context);
+
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        InkWell(
+          hoverColor:
+              decoration?.rowHoverColor ?? tx.primaryColor.withOpacity(0.2),
+          splashColor:
+              decoration?.rowSplashColor ?? tx.primaryColor.withOpacity(0.1),
+          highlightColor:
+              decoration?.rowHighlightColor ?? tx.primaryColor.withOpacity(0.1),
+          onTap: () => onTap?.call(index),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ...buildRow(context, index),
-              additionalActionsRow(context, index)
+              Padding(
+                padding: decoration?.rowPadding ??
+                    EdgeInsets.symmetric(
+                        horizontal: 35.0, vertical: dense ? 30 : 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ...buildRow(context, index),
+                    additionalActionsRow(context, index),
+                  ],
+                ),
+              ),
+              if (decoration?.showDivider ?? false)
+                Container(color: decoration?.dividerColor, height: 0.7)
             ],
           ),
         ),
-      );
+      ],
+    );
+  }
 }

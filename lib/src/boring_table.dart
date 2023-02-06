@@ -1,12 +1,11 @@
 import 'dart:math';
+
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
 import 'package:boring_table/src/boring_table_body.dart';
 import 'package:boring_table/src/boring_table_decoration.dart';
 import 'package:boring_table/src/boring_table_header.dart';
 import 'package:boring_table/src/boring_table_title.dart';
-import 'package:boring_table/src/sliver_persistent_row.dart';
-
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
@@ -21,6 +20,7 @@ class BoringTable extends StatefulWidget {
       required this.rowBuilder,
       required this.rowCount,
       this.widgetWhenEmpty,
+      this.footer,
       this.rowActionsColumnLabel,
       this.shape,
       this.cardElevation,
@@ -37,9 +37,10 @@ class BoringTable extends StatefulWidget {
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
       this.shape,
+      this.footer,
       this.cardElevation,
       this.rowActions = const []})
-      : rowBuilder = ((context, index)  => items[index].toTableRow()),
+      : rowBuilder = ((context, index) => items[index].toTableRow()),
         rowCount = items.length;
 
   final List<TableHeaderElement> headerRow;
@@ -54,9 +55,9 @@ class BoringTable extends StatefulWidget {
   final double? cardElevation;
   final ShapeBorder? shape;
   final BoringTableDecoration? decoration;
+  final Widget? footer;
 
   //TODO final String? subtitle;
-  //TODO final Widget footer;
 
   @override
   State<BoringTable> createState() => _BoringTableState();
@@ -76,9 +77,6 @@ class _BoringTableState extends State<BoringTable> {
     _controllers = LinkedScrollControllerGroup();
     _first = _controllers.addAndGet();
     _second = _controllers.addAndGet();
-
-
-
   }
 
   @override
@@ -90,8 +88,6 @@ class _BoringTableState extends State<BoringTable> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return LayoutBuilder(builder: (context, constraints) {
       final maxWidth = max(
         constraints.maxWidth,
@@ -151,5 +147,16 @@ class _BoringTableState extends State<BoringTable> {
         ),
       );
 
-  Widget footer() => const Padding(padding: EdgeInsets.all(16.0));
+  Widget footer() => Column(
+        children: [
+          Container(
+              color: widget.decoration?.dividerColor ??
+                  Theme.of(context).dividerColor,
+              height: 0.7),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: widget.footer ?? Container(),
+          )
+        ],
+      );
 }

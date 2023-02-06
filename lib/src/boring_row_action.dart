@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BoringRowAction {
@@ -10,6 +8,7 @@ class BoringRowAction {
       this.icon,
       this.buttonStyle,
       this.tooltip,
+      this.fillButton = false,
       this.buttonText})
       : assert(icon == null || svgAsset == null,
             "You can't set both svgAsset and icon"),
@@ -24,7 +23,7 @@ class BoringRowAction {
   final Function(int) onTap;
   final ButtonStyle? buttonStyle;
   final String? tooltip;
-
+  final bool fillButton;
   final double svgHeight = 30;
   final double svgWidth = 30;
 
@@ -35,6 +34,7 @@ class BoringRowAction {
         height: svgHeight,
         width: svgWidth,
       );
+
   bool _hasIcon() => icon != null || svgAsset != null;
 
   Widget actionWidget(int index) {
@@ -45,11 +45,17 @@ class BoringRowAction {
               icon: _icon(),
               label: Text(buttonText!),
               style: buttonStyle)
-          : ElevatedButton(
-              onPressed: () => onTap(index),
-              style: buttonStyle,
-              child: Text(buttonText!),
-            );
+          : fillButton
+              ? ElevatedButton(
+                  onPressed: () => onTap(index),
+                  style: buttonStyle,
+                  child: Text(buttonText!),
+                )
+              : TextButton(
+                  onPressed: () => onTap(index),
+                  child: Text(buttonText!),
+                  style: buttonStyle,
+                );
     }
 
     return InkWell(
@@ -65,11 +71,17 @@ class BoringRowAction {
 
   Widget build(BuildContext context, int index) {
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip,
-        child: actionWidget(index),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Tooltip(
+          message: tooltip,
+          child: actionWidget(index),
+        ),
       );
     }
-    return actionWidget(index);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: actionWidget(index),
+    );
   }
 }

@@ -89,7 +89,7 @@ class BoringTableBody extends StatelessWidget {
                 ),
               ),
               if (decoration?.showDivider ?? false)
-                Container(color: decoration?.dividerColor, height: 0.7)
+                Container(color: decoration?.dividerColor ?? tx.dividerColor, height: 0.7)
             ],
           ),
         ),

@@ -2,9 +2,12 @@ import 'package:boring_table/boring_table.dart';
 import 'package:boring_table/models/models.dart';
 import 'package:flutter/material.dart';
 
+import 'boring_table_decoration.dart';
+
 class BoringTableHeader extends StatefulWidget {
-  BoringTableHeader({
+  const BoringTableHeader({
     super.key,
+    this.decoration,
     required this.rowHeader,
     this.rowActions,
     required this.rowActionsColumnLabel,
@@ -13,6 +16,7 @@ class BoringTableHeader extends StatefulWidget {
   final List<TableHeaderElement> rowHeader;
   final List<BoringRowAction>? rowActions;
   final String rowActionsColumnLabel;
+  final BoringTableDecoration? decoration;
 
   @override
   State<BoringTableHeader> createState() => _BoringTableHeaderState();
@@ -35,6 +39,7 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
   final GlobalKey _headerActionsKey = GlobalKey();
   bool built = false;
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild());
@@ -52,16 +57,17 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     final textTheme = Theme.of(context).textTheme;
-    print(_headerActionsKey.currentContext);
+
     return
         // Second header row
         ColoredBox(
-      color: Theme.of(context).primaryColor,
+      color: widget.decoration?.headerColor ?? Theme.of(context).primaryColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 35.0,
-          vertical: 23.0,
-        ),
+        padding: widget.decoration?.headerPadding ??
+            const EdgeInsets.symmetric(
+              horizontal: 35.0,
+              vertical: 23.0,
+            ),
         child: Stack(
           children: [
             Offstage(offstage: true, child: additionalActionsRow(context, 0)),
@@ -81,9 +87,10 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
                 child: Text(
                   item.label,
                   textAlign: item.alignment,
-                  style: textTheme.titleMedium!.copyWith(
-                    color: Colors.grey.shade800,
-                  ),
+                  style: widget.decoration?.headerTextStyle ??
+                      textTheme.titleMedium!.copyWith(
+                        color: Colors.grey.shade800,
+                      ),
                 )),
           )
           .toList(),
@@ -97,9 +104,10 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
           child: Text(
             widget.rowActionsColumnLabel,
             textAlign: TextAlign.center,
-            style: textTheme.titleMedium!.copyWith(
-              color: Colors.grey.shade800,
-            ),
+            style: widget.decoration?.headerTextStyle ??
+                textTheme.titleMedium!.copyWith(
+                  color: Colors.grey.shade800,
+                ),
           ))
     ]);
   }

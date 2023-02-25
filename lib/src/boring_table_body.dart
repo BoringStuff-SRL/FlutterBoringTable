@@ -1,5 +1,6 @@
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
+
 import 'package:flutter/material.dart';
 
 import 'boring_table_decoration.dart';
@@ -35,14 +36,41 @@ class BoringTableBody extends StatelessWidget {
           )
           .toList();
 
-  Widget additionalActionsRow(BuildContext context, int index) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: rowActions
-            .asMap()
-            .entries
-            .map((e) => e.value.build(context, index))
-            .toList(),
-      );
+  Widget additionalActionsRow(BuildContext context, int index) =>
+      rowActions.length > 1
+          ? PopupMenuButton(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              itemBuilder: (context) {
+                return rowActions
+                    .asMap()
+                    .entries
+                    .map((e) => PopupMenuItem(
+                          onTap: () => e.value.onTap,
+                          child: Row(
+                            children: [
+                              if (e.value.icon != null) e.value.icon!,
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              if (e.value.buttonText != null)
+                                Text(e.value.buttonText!),
+                            ],
+                          ),
+                        ))
+                    .toList();
+              },
+              child: rowActions.elementAt(0).popMenuIcon,
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: rowActions
+                  .asMap()
+                  .entries
+                  .map((e) => e.value.build(context, index))
+                  .toList(),
+            );
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +117,9 @@ class BoringTableBody extends StatelessWidget {
                 ),
               ),
               if (decoration?.showDivider ?? false)
-                Container(color: decoration?.dividerColor ?? tx.dividerColor, height: 0.7)
+                Container(
+                    color: decoration?.dividerColor ?? tx.dividerColor,
+                    height: 0.7)
             ],
           ),
         ),

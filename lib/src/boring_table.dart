@@ -12,34 +12,42 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 class BoringTable extends StatefulWidget {
   const BoringTable(
       {super.key,
-      this.onTap,
-      this.title,
-      this.minWidth,
-      this.decoration,
-      required this.headerRow,
-      required this.rowBuilder,
-      required this.rowCount,
-      this.widgetWhenEmpty,
-      this.footer,
-      this.rowActionsColumnLabel,
-      this.shape,
-      this.cardElevation,
-      this.rowActions = const []});
+        this.onTap,
+        this.title,
+        this.minWidth,
+        this.decoration,
+        required this.headerRow,
+        required this.rowBuilder,
+        required this.rowCount,
+        this.widgetWhenEmpty,
+        this.footer,
+        this.rowActionsColumnLabel,
+        this.shape,
+        this.groupActionsMenuShape,
+        this.cardElevation,
+        this.actionGroupTextStyle,
+        this.groupActions = false,
+        this.groupActionsWidget = const Icon(Icons.more_vert),
+        this.rowActions = const []});
 
   BoringTable.fromList(
       {super.key,
-      this.onTap,
-      this.title,
-      this.minWidth,
-      this.decoration,
-      required this.headerRow,
-      required List<BoringTableRowElement> items,
-      this.widgetWhenEmpty,
-      this.rowActionsColumnLabel,
-      this.shape,
-      this.footer,
-      this.cardElevation,
-      this.rowActions = const []})
+        this.onTap,
+        this.title,
+        this.minWidth,
+        this.decoration,
+        required this.headerRow,
+        required List<BoringTableRowElement> items,
+        this.widgetWhenEmpty,
+        this.rowActionsColumnLabel,
+        this.shape,
+        this.footer,
+        this.cardElevation,
+        this.groupActionsMenuShape,
+        this.actionGroupTextStyle,
+        this.groupActions = false,
+        this.groupActionsWidget = const Icon(Icons.more_vert),
+        this.rowActions = const []})
       : rowBuilder = ((context, index) => items[index].toTableRow()),
         rowCount = items.length;
 
@@ -56,6 +64,10 @@ class BoringTable extends StatefulWidget {
   final ShapeBorder? shape;
   final BoringTableDecoration? decoration;
   final Widget? footer;
+  final bool groupActions;
+  final TextStyle? actionGroupTextStyle;
+  final Widget groupActionsWidget;
+  final ShapeBorder? groupActionsMenuShape;
 
   //TODO final String? subtitle;
 
@@ -109,22 +121,26 @@ class _BoringTableState extends State<BoringTable> {
               child: (widget.rowCount == 0 && widget.widgetWhenEmpty != null)
                   ? Center(child: widget.widgetWhenEmpty!)
                   : Scrollbar(
-                      scrollbarOrientation: ScrollbarOrientation.bottom,
-                      controller: _second,
-                      child: SingleChildScrollView(
-                        controller: _second,
-                        scrollDirection: Axis.horizontal,
-                        child: BoringTableBody(
-                          decoration: widget.decoration,
-                          onTap: widget.onTap,
-                          maxWidth: maxWidth,
-                          rowBuilder: widget.rowBuilder,
-                          headerRow: widget.headerRow,
-                          rowCount: widget.rowCount,
-                          rowActions: widget.rowActions,
-                        ),
-                      ),
-                    ),
+                scrollbarOrientation: ScrollbarOrientation.bottom,
+                controller: _second,
+                child: SingleChildScrollView(
+                  controller: _second,
+                  scrollDirection: Axis.horizontal,
+                  child: BoringTableBody(
+                    groupActionsWidget: widget.groupActionsWidget,
+                    decoration: widget.decoration,
+                    onTap: widget.onTap,
+                    maxWidth: maxWidth,
+                    rowBuilder: widget.rowBuilder,
+                    headerRow: widget.headerRow,
+                    groupActionsMenuShape: widget.groupActionsMenuShape,
+                    rowCount: widget.rowCount,
+                    groupActions: widget.groupActions,
+                    actionGroupTextStyle: widget.actionGroupTextStyle,
+                    rowActions: widget.rowActions,
+                  ),
+                ),
+              ),
             ),
             footer()
           ],
@@ -134,29 +150,30 @@ class _BoringTableState extends State<BoringTable> {
   }
 
   Widget header(double maxWidth) => SingleChildScrollView(
-        controller: _first,
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: maxWidth),
-          child: BoringTableHeader(
-            decoration: widget.decoration,
-            rowHeader: widget.headerRow,
-            rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
-            rowActions: widget.rowActions,
-          ),
-        ),
-      );
+    controller: _first,
+    scrollDirection: Axis.horizontal,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: BoringTableHeader(
+        decoration: widget.decoration,
+        rowHeader: widget.headerRow,
+        rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
+        groupActions: widget.groupActions,
+        rowActions: widget.rowActions,
+      ),
+    ),
+  );
 
   Widget footer() => Column(
-        children: [
-          Container(
-              color: widget.decoration?.dividerColor ??
-                  Theme.of(context).dividerColor,
-              height: 0.7),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: widget.footer ?? Container(),
-          )
-        ],
-      );
+    children: [
+      Container(
+          color: widget.decoration?.dividerColor ??
+              Theme.of(context).dividerColor,
+          height: 0.7),
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: widget.footer ?? Container(),
+      )
+    ],
+  );
 }

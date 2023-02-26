@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 class BoringRowAction {
   const BoringRowAction(
       {required this.onTap,
-      this.popMenuIcon,
+      this.svgAsset,
       this.icon,
       this.buttonStyle,
       this.tooltip,
@@ -16,7 +16,7 @@ class BoringRowAction {
         assert(buttonStyle == null || buttonText != null,
             "You can't set buttonStyle if buttonText is null");
 
-  final Widget? popMenuIcon;
+  final String? svgAsset;
   final Widget? icon;
   final String? buttonText;
   final Function(int) onTap;

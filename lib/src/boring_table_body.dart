@@ -1,21 +1,25 @@
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'boring_table_decoration.dart';
 
 class BoringTableBody extends StatelessWidget {
   const BoringTableBody(
       {super.key,
-      this.onTap,
-      required this.maxWidth,
-      required this.rowBuilder,
-      required this.headerRow,
-      required this.rowCount,
-      this.decoration,
-      this.dense = false,
-      this.rowActions = const []});
+        this.onTap,
+        required this.maxWidth,
+        required this.rowBuilder,
+        required this.headerRow,
+        required this.rowCount,
+        this.groupActionsMenuShape,
+        this.groupActions = false,
+        this.decoration,
+        this.dense = false,
+        this.actionGroupTextStyle,
+        required this.groupActionsWidget,
+        this.rowActions = const []});
 
   final double maxWidth;
   final List<Widget> Function(BuildContext context, int index) rowBuilder;
@@ -25,6 +29,10 @@ class BoringTableBody extends StatelessWidget {
   final List<BoringRowAction> rowActions;
   final bool dense;
   final BoringTableDecoration? decoration;
+  final bool groupActions;
+  final TextStyle? actionGroupTextStyle;
+  final Widget groupActionsWidget;
+  final ShapeBorder? groupActionsMenuShape;
 
   List<Widget> buildRow(BuildContext context, int index) =>
       rowBuilder(context, index)
@@ -32,45 +40,18 @@ class BoringTableBody extends StatelessWidget {
           .entries
           .map(
             (item) =>
-                Expanded(flex: headerRow[item.key].flex, child: item.value),
-          )
+            Expanded(flex: headerRow[item.key].flex, child: item.value),
+      )
           .toList();
 
-  Widget additionalActionsRow(BuildContext context, int index) =>
-      rowActions.length > 1
-          ? PopupMenuButton(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              itemBuilder: (context) {
-                return rowActions
-                    .asMap()
-                    .entries
-                    .map((e) => PopupMenuItem(
-                          onTap: () => e.value.onTap,
-                          child: Row(
-                            children: [
-                              if (e.value.icon != null) e.value.icon!,
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              if (e.value.buttonText != null)
-                                Text(e.value.buttonText!),
-                            ],
-                          ),
-                        ))
-                    .toList();
-              },
-              child: rowActions.elementAt(0).popMenuIcon,
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: rowActions
-                  .asMap()
-                  .entries
-                  .map((e) => e.value.build(context, index))
-                  .toList(),
-            );
+  Widget additionalActionsRow(BuildContext context, int index) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: rowActions
+        .asMap()
+        .entries
+        .map((e) => e.value.build(context, index))
+        .toList(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +68,42 @@ class BoringTableBody extends StatelessWidget {
     );
   }
 
+  Widget _buildActionsGroup(BuildContext context, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: PopupMenuButton(
+        splashRadius: 20,
+        shape: groupActionsMenuShape,
+        padding: EdgeInsets.zero,
+        icon: groupActionsWidget,
+        itemBuilder: (context) {
+          return rowActions
+              .asMap()
+              .entries
+              .map((e) => PopupMenuItem(
+            onTap: () {
+              e.value.onTap.call(index);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                e.value.icon ?? SvgPicture.asset(e.value.svgAsset!),
+                const SizedBox(
+                  width: 7,
+                ),
+                Text(
+                  e.value.buttonText ?? "",
+                  style: actionGroupTextStyle,
+                ),
+              ],
+            ),
+          ))
+              .toList();
+        },
+      ),
+    );
+  }
+
   Widget itemAtPosition(BuildContext context, int index) {
     final tx = Theme.of(context);
 
@@ -95,11 +112,11 @@ class BoringTableBody extends StatelessWidget {
       children: [
         InkWell(
           hoverColor:
-              decoration?.rowHoverColor ?? tx.primaryColor.withOpacity(0.2),
+          decoration?.rowHoverColor ?? tx.primaryColor.withOpacity(0.2),
           splashColor:
-              decoration?.rowSplashColor ?? tx.primaryColor.withOpacity(0.1),
+          decoration?.rowSplashColor ?? tx.primaryColor.withOpacity(0.1),
           highlightColor:
-              decoration?.rowHighlightColor ?? tx.primaryColor.withOpacity(0.1),
+          decoration?.rowHighlightColor ?? tx.primaryColor.withOpacity(0.1),
           onTap: () => onTap?.call(index),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,7 +129,9 @@ class BoringTableBody extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ...buildRow(context, index),
-                    additionalActionsRow(context, index),
+                    groupActions
+                        ? _buildActionsGroup(context, index)
+                        : additionalActionsRow(context, index),
                   ],
                 ),
               ),

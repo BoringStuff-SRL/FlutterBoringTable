@@ -10,6 +10,7 @@ class BoringTableHeader extends StatefulWidget {
     this.decoration,
     required this.rowHeader,
     this.rowActions,
+    required this.groupActions,
     required this.rowActionsColumnLabel,
   });
 
@@ -17,6 +18,7 @@ class BoringTableHeader extends StatefulWidget {
   final List<BoringRowAction>? rowActions;
   final String rowActionsColumnLabel;
   final BoringTableDecoration? decoration;
+  final bool groupActions;
 
   @override
   State<BoringTableHeader> createState() => _BoringTableHeaderState();
@@ -96,10 +98,12 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
           .toList(),
       SizedBox(
           width: _headerActionsKey.currentContext != null
-              ? (_headerActionsKey.currentContext!.findRenderObject()
-                      as RenderBox)
-                  .size
-                  .width
+              ? widget.groupActions
+                  ? 85
+                  : (_headerActionsKey.currentContext!.findRenderObject()
+                          as RenderBox)
+                      .size
+                      .width
               : 0,
           child: Text(
             widget.rowActionsColumnLabel,

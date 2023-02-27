@@ -23,7 +23,11 @@ class BoringTable extends StatefulWidget {
       this.footer,
       this.rowActionsColumnLabel,
       this.shape,
+      this.groupActionsMenuShape,
       this.cardElevation,
+      this.actionGroupTextStyle,
+      this.groupActions = false,
+      this.groupActionsWidget = const Icon(Icons.more_vert),
       this.rowActions = const []});
 
   BoringTable.fromList(
@@ -39,6 +43,10 @@ class BoringTable extends StatefulWidget {
       this.shape,
       this.footer,
       this.cardElevation,
+      this.groupActionsMenuShape,
+      this.actionGroupTextStyle,
+      this.groupActions = false,
+      this.groupActionsWidget = const Icon(Icons.more_vert),
       this.rowActions = const []})
       : rowBuilder = ((context, index) => items[index].toTableRow()),
         rowCount = items.length;
@@ -56,6 +64,10 @@ class BoringTable extends StatefulWidget {
   final ShapeBorder? shape;
   final BoringTableDecoration? decoration;
   final Widget? footer;
+  final bool groupActions;
+  final TextStyle? actionGroupTextStyle;
+  final Widget groupActionsWidget;
+  final ShapeBorder? groupActionsMenuShape;
 
   //TODO final String? subtitle;
 
@@ -115,12 +127,16 @@ class _BoringTableState extends State<BoringTable> {
                         controller: _second,
                         scrollDirection: Axis.horizontal,
                         child: BoringTableBody(
+                          groupActionsWidget: widget.groupActionsWidget,
                           decoration: widget.decoration,
                           onTap: widget.onTap,
                           maxWidth: maxWidth,
                           rowBuilder: widget.rowBuilder,
                           headerRow: widget.headerRow,
+                          groupActionsMenuShape: widget.groupActionsMenuShape,
                           rowCount: widget.rowCount,
+                          groupActions: widget.groupActions,
+                          actionGroupTextStyle: widget.actionGroupTextStyle,
                           rowActions: widget.rowActions,
                         ),
                       ),
@@ -142,6 +158,7 @@ class _BoringTableState extends State<BoringTable> {
             decoration: widget.decoration,
             rowHeader: widget.headerRow,
             rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
+            groupActions: widget.groupActions,
             rowActions: widget.rowActions,
           ),
         ),

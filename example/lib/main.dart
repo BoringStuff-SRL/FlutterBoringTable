@@ -49,6 +49,20 @@ class Example extends StatelessWidget {
 
 class ExampleBody extends StatelessWidget {
   const ExampleBody({super.key});
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed, // Any states you want to affect here
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      // if any of the input states are found in our list
+      return Colors.transparent;
+    }
+    return Colors.red; // default color
+  }
+
   @override
   Widget build(BuildContext context) {
     return BoringTable.fromList(
@@ -56,19 +70,26 @@ class ExampleBody extends StatelessWidget {
       headerRow: RowElementClass.tableHeader,
       rowActionsColumnLabel: "More",
       items: list,
+      groupActions: true,
+      groupActionsMenuShape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      groupActionsWidget: const Icon(
+        Icons.more_vert,
+        color: Colors.amber,
+      ),
+      actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [
         BoringRowAction(
-            tooltip: "EXEC",
             icon: Icon(Icons.add),
+            buttonText: "asd",
             onTap: (int c) {
-              print(c);
+              print("ADD $c");
             }),
         BoringRowAction(
-            buttonText: "CIAO",
-            icon: Icon(Icons.mobile_friendly),
+            icon: Icon(Icons.add),
             onTap: (int c) {
-              print(c);
-            })
+              print("ADD $c");
+            }),
       ],
       title: BoringTableTitle(
         actions: [

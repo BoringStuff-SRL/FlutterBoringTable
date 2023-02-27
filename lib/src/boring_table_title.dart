@@ -7,7 +7,7 @@ class BoringTableTitle extends StatelessWidget {
     this.actions = const [],
   });
 
-  final String title;
+  final Widget title;
   final List<Widget> actions;
   final bool largeScreen = true;
 
@@ -19,13 +19,7 @@ class BoringTableTitle extends StatelessWidget {
           children: <Widget>[
             if (largeScreen)
               Expanded(
-                child: Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(fontWeight: FontWeight.w600, fontSize: 19.0),
-                ),
+                child: title
               ),
             if (largeScreen) const Spacer(),
             ...actions

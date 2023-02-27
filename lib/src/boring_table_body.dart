@@ -87,7 +87,7 @@ class BoringTableBody extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        e.value.icon ?? SvgPicture.asset(e.value.svgAsset!),
+                        e.value.icon ?? Container(),
                         const SizedBox(
                           width: 7,
                         ),

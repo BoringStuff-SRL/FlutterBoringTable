@@ -112,7 +112,7 @@ class BoringTableBody extends StatelessWidget {
       children: [
         InkWell(
           hoverColor:
-              decoration?.rowHoverColor ?? tx.primaryColor.withOpacity(0.2),
+              decoration?.rowHoverColor ?? tx.primaryColor.withOpacity(0.15),
           splashColor:
               decoration?.rowSplashColor ?? tx.primaryColor.withOpacity(0.1),
           highlightColor:

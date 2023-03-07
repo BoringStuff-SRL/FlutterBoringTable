@@ -21,7 +21,7 @@ class BoringTableTitle extends StatelessWidget {
             return Row(
               children: <Widget>[
                 if (width > 750) Expanded(child: title),
-                if (width > 750) const Spacer(),
+                if (width > 950) const Spacer(),
                 ...actions
               ],
             );

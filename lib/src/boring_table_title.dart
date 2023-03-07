@@ -9,21 +9,23 @@ class BoringTableTitle extends StatelessWidget {
 
   final Widget title;
   final List<Widget> actions;
-  final bool largeScreen = true;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 25.0),
-        child: Row(
-          children: <Widget>[
-            if (largeScreen)
-              Expanded(
-                child: title
-              ),
-            if (largeScreen) const Spacer(),
-            ...actions
-          ],
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
+        child: LayoutBuilder(
+          builder: (context, _) {
+            final width = MediaQuery.of(context).size.width;
+
+            return Row(
+              children: <Widget>[
+                if (width > 750) Expanded(child: title),
+                if (width > 750) const Spacer(),
+                ...actions
+              ],
+            );
+          },
         ));
   }
 }

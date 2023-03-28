@@ -62,7 +62,11 @@ class BoringTableBody extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
-          return (itemAtPosition(context, index));
+          return Container(
+              color: index.isEven
+                  ? decoration?.evenRowColor
+                  : decoration?.oddRowColor,
+              child: (itemAtPosition(context, index)));
         }),
       ),
     );

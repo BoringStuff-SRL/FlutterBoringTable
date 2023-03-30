@@ -12,6 +12,8 @@ class BoringTableDecoration {
       this.rowPadding,
       this.headerTextStyle,
       this.rowTextStyle,
+      this.evenRowColor,
+      this.oddRowColor,
       this.showDivider});
 
   final Color? headerColor;
@@ -20,6 +22,8 @@ class BoringTableDecoration {
   final Color? rowSplashColor;
   final Color? rowHighlightColor;
   final Color? dividerColor;
+  final Color? evenRowColor;
+  final Color? oddRowColor;
   final EdgeInsetsGeometry? headerPadding;
   final EdgeInsetsGeometry? rowPadding;
   final TextStyle? headerTextStyle;

@@ -70,6 +70,10 @@ class ExampleBody extends StatelessWidget {
       headerRow: RowElementClass.tableHeader,
       rowActionsColumnLabel: "More",
       items: list,
+      decoration: BoringTableDecoration(
+          showDivider: true,
+          evenRowColor: Colors.purple,
+          oddRowColor: Colors.pink),
       groupActions: true,
       groupActionsMenuShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -96,7 +100,7 @@ class ExampleBody extends StatelessWidget {
           ElevatedButton(
               onPressed: () => print("PRESSED"), child: Text("PRESS ME"))
         ],
-        title: "Titolo",
+        title: Text("Titolo"),
       ),
     );
   }

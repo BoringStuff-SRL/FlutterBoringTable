@@ -134,7 +134,7 @@ class ExampleBody extends StatelessWidget {
         ),
       ),
       filters: [
-        BoringTextFilter<Person>(
+        BoringTextFilter(
           //type: BoringFilterType.text
           title: 'Nome',
           where: (element, controller) {
@@ -143,11 +143,10 @@ class ExampleBody extends StatelessWidget {
             }
             return true;
           },
-
           valueController: BoringFilterValueController<String>(),
           hintText: 'Inserisci nome',
         ),
-        BoringDropdownFilter<Person>(
+        BoringDropdownFilter(
           title: 'Cognome',
           values: [
             'asd',

@@ -78,7 +78,7 @@ class BoringTable<T> extends StatefulWidget {
   final TextStyle? actionGroupTextStyle;
   final Widget groupActionsWidget;
   final ShapeBorder? groupActionsMenuShape;
-  final List<BoringFilter>? filters;
+  final List<BoringFilter<T>>? filters;
   final List<T>? rawItems;
   final BoringFilterStyle? filterStyle;
 
@@ -123,7 +123,7 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
       filteredItems = [];
       for (T item in widget.rawItems!) {
         bool isAcceptable = true;
-        for (BoringFilter filter in widget.filters!) {
+        for (BoringFilter<T> filter in widget.filters!) {
           if (!filter.where(item, filter.valueController)) {
             isAcceptable = false;
             break;

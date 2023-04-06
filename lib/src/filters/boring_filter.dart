@@ -2,12 +2,10 @@
 import 'package:flutter/foundation.dart';
 
 abstract class BoringFilter<T> {
-  bool Function(
-          dynamic element, BoringFilterValueController<dynamic> valueController)
-      where;
+  bool Function(T element, BoringFilterValueController valueController) where;
   final String title;
   final String hintText;
-  final BoringFilterValueController<dynamic> valueController;
+  final BoringFilterValueController valueController;
   final BoringFilterType _type;
   final List<dynamic>? values;
   final List<String>? showingValues;

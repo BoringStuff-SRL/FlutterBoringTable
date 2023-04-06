@@ -144,6 +144,12 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant BoringTable<T> oldWidget) {
+    setBuilder();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final maxWidth = max(

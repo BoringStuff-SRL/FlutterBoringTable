@@ -1,5 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/boring_table.dart';
+import 'package:boring_table/src/filters/boring_filter_style.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +42,7 @@ class Example extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Boring Table"),
       ),
-      body: const Padding(
+      body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ExampleBody(),
       ),
@@ -47,8 +50,22 @@ class Example extends StatelessWidget {
   }
 }
 
+class Person {
+  String name;
+  String surname;
+  Person({
+    required this.name,
+    required this.surname,
+  });
+}
+
+enum UserType {
+  admin,
+  normal;
+}
+
 class ExampleBody extends StatelessWidget {
-  const ExampleBody({super.key});
+  ExampleBody({super.key});
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -63,13 +80,24 @@ class ExampleBody extends StatelessWidget {
     return Colors.red; // default color
   }
 
+  static final List<Person> userList = List.generate(
+    10000,
+    (index) => Person(name: '$index', surname: '$index'),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return BoringTable.fromList(
+    return BoringTable<Person>.fromList(
       onTap: ((p0) => print("Tapped $p0")),
       headerRow: RowElementClass.tableHeader,
       rowActionsColumnLabel: "More",
-      items: list,
+      toTableRow: (dynamic user) {
+        return [
+          Text(user.name),
+          Text(user.surname),
+        ];
+      },
+      rawItems: userList,
       decoration: BoringTableDecoration(
           showDivider: true,
           evenRowColor: Colors.purple,
@@ -81,18 +109,71 @@ class ExampleBody extends StatelessWidget {
         Icons.more_vert,
         color: Colors.amber,
       ),
+      filterStyle: BoringFilterStyle(
+        openFiltersDialogWidget: Icon(Icons.abc),
+        titleStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+        hintStyle: TextStyle(color: Colors.amber),
+        textInputDecoration: const InputDecoration(
+          focusedBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+        ),
+        dropdownBoxDecoration: BoxDecoration(
+          border: Border.all(color: Colors.red),
+        ),
+        filterDialogTitle: Text('FILTRIIIIIIII'),
+        applyFiltersText: "APPLICA",
+        removeFiltersText: "RIMUOVI",
+        applyFiltersButtonStyle: ButtonStyle(
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.red),
+        ),
+        removeFiltersButtonStyle: ButtonStyle(
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.black),
+        ),
+      ),
+      filters: [
+        BoringTextFilter<Person>(
+          //type: BoringFilterType.text
+          title: 'Nome',
+          where: (element, controller) {
+            if (controller.value != null) {
+              return (element).name.contains(controller.value);
+            }
+            return true;
+          },
+
+          valueController: BoringFilterValueController<String>(),
+          hintText: 'Inserisci nome',
+        ),
+        BoringDropdownFilter<Person>(
+          title: 'Cognome',
+          values: [
+            'asd',
+            'qwe',
+          ],
+          showingValues: [
+            'asd',
+            'qwe',
+          ],
+          where: (element, controller) {
+            if (controller.value != null) {
+              return element.surname.contains(controller.value);
+            }
+            return true;
+          },
+          valueController: BoringFilterValueController<String>(),
+          hintText: 'Seleziona cognome',
+        ),
+      ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [
         BoringRowAction(
             icon: Icon(Icons.add),
             buttonText: "asd",
-            onTap: (int c) {
-              print("ADD $c");
-            }),
-        BoringRowAction(
-            icon: Icon(Icons.add),
-            onTap: (int c) {
-              print("ADD $c");
+            onTap: (c) {
+              print((c as Person).name);
             }),
       ],
       title: BoringTableTitle(
@@ -107,6 +188,10 @@ class ExampleBody extends StatelessWidget {
 }
 
 class RowElementClass extends BoringTableRowElement {
+  RowElementClass(this._user);
+
+  final Person _user;
+
   static final tableHeader = [
     TableHeaderElement(label: "Column A"),
     TableHeaderElement(label: "Column B"),
@@ -115,10 +200,8 @@ class RowElementClass extends BoringTableRowElement {
   @override
   List<Widget> toTableRow() {
     return [
-      const Text("Text A"),
-      const Text("Text B"),
+      Text(_user.name),
+      Text(_user.surname),
     ];
   }
 }
-
-final list = List.generate(10000, (index) => RowElementClass());

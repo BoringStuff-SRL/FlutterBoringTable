@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 
 import 'boring_table_decoration.dart';
 
-class BoringTableHeader extends StatefulWidget {
-  const BoringTableHeader({
-    super.key,
-    this.decoration,
-    required this.rowHeader,
-    this.rowActions,
-    required this.groupActions,
-    required this.rowActionsColumnLabel,
-  });
+class BoringTableHeader<T> extends StatefulWidget {
+  const BoringTableHeader(
+      {super.key,
+      this.decoration,
+      required this.rowHeader,
+      this.rowActions,
+      required this.groupActions,
+      required this.rowActionsColumnLabel,
+      required this.rawItems});
 
   final List<TableHeaderElement> rowHeader;
   final List<BoringRowAction>? rowActions;
   final String rowActionsColumnLabel;
   final BoringTableDecoration? decoration;
   final bool groupActions;
+  final List<T> rawItems;
 
   @override
   State<BoringTableHeader> createState() => _BoringTableHeaderState();
@@ -33,7 +34,9 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
               children: widget.rowActions!
                   .asMap()
                   .entries
-                  .map((e) => e.value.build(context, index))
+                  .map(
+                    (e) => e.value.build(context, null),
+                  )
                   .toList(),
             )
           : Container();

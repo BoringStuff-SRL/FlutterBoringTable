@@ -13,7 +13,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'filters/boring_filter_style.dart';
 
 class BoringTable<T> extends StatefulWidget {
-  BoringTable(
+  const BoringTable(
       {super.key,
       this.onTap,
       this.title,
@@ -81,7 +81,6 @@ class BoringTable<T> extends StatefulWidget {
   final List<BoringFilter<T>>? filters;
   final List<T>? rawItems;
   final BoringFilterStyle? filterStyle;
-
   final List<Widget> Function(T element)? toTableRow;
 
   //TODO final String? subtitle;
@@ -96,7 +95,7 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
   late ScrollController _first;
   late ScrollController _second;
 
-  late int _rowCount;
+  final ValueNotifier<int> _rowCount = ValueNotifier(0);
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
 
@@ -133,20 +132,14 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
           filteredItems.add(item);
         }
       }
-      _rowCount = filteredItems.length;
+      _rowCount.value = filteredItems.length;
       _rowBuilder =
           (context, index) => widget.toTableRow!(filteredItems[index]);
     } else {
       filteredItems = widget.rawItems as List<T>;
-      _rowCount = widget.rowCount;
+      _rowCount.value = widget.rowCount;
       _rowBuilder = widget.rowBuilder;
     }
-  }
-
-  @override
-  void didUpdateWidget(covariant BoringTable<T> oldWidget) {
-    setBuilder();
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -180,17 +173,13 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
                                 BoringFilterDialog.showFiltersDialog(
                                   context,
                                   filters: widget.filters!,
-                                  setBuilder: () {
-                                    setState(() {
-                                      setBuilder();
-                                    });
-                                  },
+                                  setBuilder: () => setBuilder(),
                                   style: widget.filterStyle,
                                 );
                               },
                               child:
                                   widget.filterStyle?.openFiltersDialogWidget ??
-                                      Icon(Icons.filter_alt_sharp),
+                                      const Icon(Icons.filter_alt_sharp),
                             ),
                           ),
                           const SizedBox(
@@ -210,19 +199,26 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
                       child: SingleChildScrollView(
                         controller: _second,
                         scrollDirection: Axis.horizontal,
-                        child: BoringTableBody<T>(
-                          groupActionsWidget: widget.groupActionsWidget,
-                          decoration: widget.decoration,
-                          onTap: (widget.onTap as void Function(T)),
-                          maxWidth: maxWidth,
-                          rawItems: filteredItems,
-                          rowBuilder: _rowBuilder,
-                          headerRow: widget.headerRow,
-                          groupActionsMenuShape: widget.groupActionsMenuShape,
-                          rowCount: _rowCount,
-                          groupActions: widget.groupActions,
-                          actionGroupTextStyle: widget.actionGroupTextStyle,
-                          rowActions: widget.rowActions,
+                        child: ValueListenableBuilder(
+                          valueListenable: _rowCount,
+                          builder:
+                              (BuildContext context, int value, Widget? child) {
+                            return BoringTableBody<T>(
+                              groupActionsWidget: widget.groupActionsWidget,
+                              decoration: widget.decoration,
+                              onTap: (widget.onTap as void Function(T)),
+                              maxWidth: maxWidth,
+                              rawItems: filteredItems,
+                              rowBuilder: _rowBuilder,
+                              headerRow: widget.headerRow,
+                              groupActionsMenuShape:
+                                  widget.groupActionsMenuShape,
+                              rowCount: value,
+                              groupActions: widget.groupActions,
+                              actionGroupTextStyle: widget.actionGroupTextStyle,
+                              rowActions: widget.rowActions,
+                            );
+                          },
                         ),
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/boring_table.dart';
 import 'package:boring_table/src/filters/boring_filter_style.dart';
+import 'package:boring_table/src/filters/boring_filter_table.dart';
 
 void main() {
   runApp(const MyApp());
@@ -87,7 +88,7 @@ class ExampleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BoringTable<Person>.fromList(
+    return BoringFilterTable<Person>(
       onTap: ((p0) => print("Tapped $p0")),
       headerRow: RowElementClass.tableHeader,
       rowActionsColumnLabel: "More",
@@ -139,7 +140,7 @@ class ExampleBody extends StatelessWidget {
           title: 'Nome',
           where: (element, controller) {
             if (controller.value != null) {
-              return (element).name.contains(controller.value);
+              return (element).name == (controller.value);
             }
             return true;
           },

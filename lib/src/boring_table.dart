@@ -1,31 +1,25 @@
 import 'dart:math';
+
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
 import 'package:boring_table/src/boring_table_body.dart';
 import 'package:boring_table/src/boring_table_decoration.dart';
 import 'package:boring_table/src/boring_table_header.dart';
 import 'package:boring_table/src/boring_table_title.dart';
-import 'package:boring_table/src/filters/boring_filter.dart';
-import 'package:boring_table/src/filters/boring_filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
-import 'filters/boring_filter_style.dart';
-
-class BoringTable<T> extends StatefulWidget {
+class BoringTable extends StatefulWidget {
   const BoringTable(
       {super.key,
       this.onTap,
       this.title,
       this.minWidth,
       this.decoration,
-      this.rawItems,
       required this.headerRow,
       required this.rowBuilder,
       required this.rowCount,
       this.widgetWhenEmpty,
-      this.filters,
-      this.filterStyle,
       this.footer,
       this.rowActionsColumnLabel,
       this.shape,
@@ -34,20 +28,16 @@ class BoringTable<T> extends StatefulWidget {
       this.actionGroupTextStyle,
       this.groupActions = false,
       this.groupActionsWidget = const Icon(Icons.more_vert),
-      this.rowActions = const []})
-      : toTableRow = null;
+      this.rowActions = const []});
 
   BoringTable.fromList(
       {super.key,
       this.onTap,
       this.title,
-      this.filterStyle,
       this.minWidth,
       this.decoration,
-      this.filters,
       required this.headerRow,
-      required this.toTableRow,
-      required this.rawItems,
+      required List<BoringTableRowElement> items,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
       this.shape,
@@ -58,17 +48,17 @@ class BoringTable<T> extends StatefulWidget {
       this.groupActions = false,
       this.groupActionsWidget = const Icon(Icons.more_vert),
       this.rowActions = const []})
-      : rowBuilder = ((context, index) => toTableRow!(rawItems![index])),
-        rowCount = rawItems!.length;
+      : rowBuilder = ((context, index) => items[index].toTableRow()),
+        rowCount = items.length;
 
   final List<TableHeaderElement> headerRow;
   final List<Widget> Function(BuildContext context, int index) rowBuilder;
   final int rowCount;
-  final void Function(T)? onTap;
+  final void Function(int)? onTap;
   final BoringTableTitle? title;
   final double? minWidth;
   final String? rowActionsColumnLabel;
-  final List<BoringRowAction<T>> rowActions;
+  final List<BoringRowAction> rowActions;
   final Widget? widgetWhenEmpty;
   final double? cardElevation;
   final ShapeBorder? shape;
@@ -78,26 +68,18 @@ class BoringTable<T> extends StatefulWidget {
   final TextStyle? actionGroupTextStyle;
   final Widget groupActionsWidget;
   final ShapeBorder? groupActionsMenuShape;
-  final List<BoringFilter<T>>? filters;
-  final List<T>? rawItems;
-  final BoringFilterStyle? filterStyle;
-  final List<Widget> Function(T element)? toTableRow;
 
   //TODO final String? subtitle;
 
   @override
-  State<BoringTable<T>> createState() => _BoringTableState<T>();
+  State<BoringTable> createState() => _BoringTableState();
 }
 
-class _BoringTableState<T> extends State<BoringTable<T>> {
+class _BoringTableState extends State<BoringTable> {
   final controller = ScrollController();
   late LinkedScrollControllerGroup _controllers;
   late ScrollController _first;
   late ScrollController _second;
-
-  final ValueNotifier<int> _rowCount = ValueNotifier(0);
-  late List<Widget> Function(BuildContext context, int index) _rowBuilder;
-  late List<T> filteredItems;
 
   double get minWidth => widget.minWidth ?? widget.headerRow.length * 200.0;
 
@@ -107,7 +89,6 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
     _controllers = LinkedScrollControllerGroup();
     _first = _controllers.addAndGet();
     _second = _controllers.addAndGet();
-    setBuilder();
   }
 
   @override
@@ -115,31 +96,6 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
     _first.dispose();
     _second.dispose();
     super.dispose();
-  }
-
-  void setBuilder() {
-    if (widget.filters != null) {
-      filteredItems = [];
-      for (T item in widget.rawItems!) {
-        bool isAcceptable = true;
-        for (BoringFilter<T> filter in widget.filters!) {
-          if (!filter.where(item, filter.valueController)) {
-            isAcceptable = false;
-            break;
-          }
-        }
-        if (isAcceptable) {
-          filteredItems.add(item);
-        }
-      }
-      _rowCount.value = filteredItems.length;
-      _rowBuilder =
-          (context, index) => widget.toTableRow!(filteredItems[index]);
-    } else {
-      filteredItems = widget.rawItems as List<T>;
-      _rowCount.value = widget.rowCount;
-      _rowBuilder = widget.rowBuilder;
-    }
   }
 
   @override
@@ -159,36 +115,7 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
             ),
         child: Column(
           children: [
-            widget.title != null
-                ? widget.filters != null
-                    ? Row(
-                        children: [
-                          Expanded(
-                            child: widget.title!,
-                          ),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () {
-                                BoringFilterDialog.showFiltersDialog(
-                                  context,
-                                  filters: widget.filters!,
-                                  setBuilder: () => setBuilder(),
-                                  style: widget.filterStyle,
-                                );
-                              },
-                              child:
-                                  widget.filterStyle?.openFiltersDialogWidget ??
-                                      const Icon(Icons.filter_alt_sharp),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      )
-                    : widget.title!
-                : Container(),
+            if (widget.title != null) widget.title!,
             header(maxWidth),
             Expanded(
               child: (widget.rowCount == 0 && widget.widgetWhenEmpty != null)
@@ -199,26 +126,18 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
                       child: SingleChildScrollView(
                         controller: _second,
                         scrollDirection: Axis.horizontal,
-                        child: ValueListenableBuilder(
-                          valueListenable: _rowCount,
-                          builder:
-                              (BuildContext context, int value, Widget? child) {
-                            return BoringTableBody<T>(
-                              groupActionsWidget: widget.groupActionsWidget,
-                              decoration: widget.decoration,
-                              onTap: (widget.onTap as void Function(T)),
-                              maxWidth: maxWidth,
-                              rawItems: filteredItems,
-                              rowBuilder: _rowBuilder,
-                              headerRow: widget.headerRow,
-                              groupActionsMenuShape:
-                                  widget.groupActionsMenuShape,
-                              rowCount: value,
-                              groupActions: widget.groupActions,
-                              actionGroupTextStyle: widget.actionGroupTextStyle,
-                              rowActions: widget.rowActions,
-                            );
-                          },
+                        child: BoringTableBody(
+                          groupActionsWidget: widget.groupActionsWidget,
+                          decoration: widget.decoration,
+                          onTap: widget.onTap,
+                          maxWidth: maxWidth,
+                          rowBuilder: widget.rowBuilder,
+                          headerRow: widget.headerRow,
+                          groupActionsMenuShape: widget.groupActionsMenuShape,
+                          rowCount: widget.rowCount,
+                          groupActions: widget.groupActions,
+                          actionGroupTextStyle: widget.actionGroupTextStyle,
+                          rowActions: widget.rowActions,
                         ),
                       ),
                     ),
@@ -230,23 +149,20 @@ class _BoringTableState<T> extends State<BoringTable<T>> {
     });
   }
 
-  Widget header(double maxWidth) {
-    return SingleChildScrollView(
-      controller: _first,
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        child: BoringTableHeader(
-          decoration: widget.decoration,
-          rowHeader: widget.headerRow,
-          rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
-          groupActions: widget.groupActions,
-          rowActions: widget.rowActions,
-          rawItems: filteredItems,
+  Widget header(double maxWidth) => SingleChildScrollView(
+        controller: _first,
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: BoringTableHeader(
+            decoration: widget.decoration,
+            rowHeader: widget.headerRow,
+            rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
+            groupActions: widget.groupActions,
+            rowActions: widget.rowActions,
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Widget footer() => Column(
         children: [

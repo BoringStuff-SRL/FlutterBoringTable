@@ -2,7 +2,7 @@ import 'package:boring_table/boring_table.dart';
 import 'package:boring_table/models/models.dart';
 import 'package:flutter/material.dart';
 
-
+import 'boring_filter_row_action.dart';
 
 class BoringFilterTableHeader<T> extends StatefulWidget {
   const BoringFilterTableHeader(
@@ -15,14 +15,15 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
       required this.rawItems});
 
   final List<TableHeaderElement> rowHeader;
-  final List<BoringRowAction>? rowActions;
+  final List<BoringFilterRowAction>? rowActions;
   final String rowActionsColumnLabel;
   final BoringTableDecoration? decoration;
   final bool groupActions;
   final List<T> rawItems;
 
   @override
-  State<BoringFilterTableHeader> createState() => _BoringFilterTableHeaderState();
+  State<BoringFilterTableHeader> createState() =>
+      _BoringFilterTableHeaderState();
 }
 
 class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {

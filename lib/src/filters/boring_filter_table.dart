@@ -12,6 +12,7 @@ import 'package:boring_table/src/filters/boring_filter_table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
+import 'boring_filter_row_action.dart';
 import 'boring_filter_style.dart';
 
 class BoringFilterTable<T> extends StatefulWidget {
@@ -42,7 +43,7 @@ class BoringFilterTable<T> extends StatefulWidget {
   final BoringTableTitle? title;
   final double? minWidth;
   final String? rowActionsColumnLabel;
-  final List<BoringRowAction<T>> rowActions;
+  final List<BoringFilterRowAction<T>> rowActions;
   final Widget? widgetWhenEmpty;
   final double? cardElevation;
   final ShapeBorder? shape;

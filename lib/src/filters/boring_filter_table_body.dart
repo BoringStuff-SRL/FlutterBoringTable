@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../boring_table.dart';
-
-
+import 'boring_filter_row_action.dart';
 
 class BoringFilterTableBody<T> extends StatelessWidget {
   const BoringFilterTableBody(
@@ -30,7 +29,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
   final List<TableHeaderElement> headerRow;
   final int rowCount;
   final void Function(T)? onTap;
-  final List<BoringRowAction<T>> rowActions;
+  final List<BoringFilterRowAction<T>> rowActions;
   final bool dense;
   final BoringTableDecoration? decoration;
   final bool groupActions;

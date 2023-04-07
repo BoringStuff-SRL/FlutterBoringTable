@@ -4,6 +4,7 @@ import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/boring_table.dart';
 import 'package:boring_table/src/filters/boring_filter_style.dart';
 import 'package:boring_table/src/filters/boring_filter_table.dart';
+import 'package:boring_table/src/filters/boring_filter_row_action.dart';
 
 void main() {
   runApp(const MyApp());
@@ -169,7 +170,7 @@ class ExampleBody extends StatelessWidget {
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [
-        BoringRowAction(
+        BoringFilterRowAction(
             icon: Icon(Icons.add),
             buttonText: "asd",
             onTap: (c) {

@@ -5,6 +5,7 @@ export 'src/boring_row_action.dart';
 export 'src/boring_table.dart';
 export 'src/boring_table_decoration.dart';
 export 'src/boring_table_title.dart';
+export 'src/filters/boring_filter.dart';
 export 'src/filters/boring_filter_row_action.dart';
 export 'src/filters/boring_filter_style.dart';
 export 'src/filters/boring_filter_table.dart';

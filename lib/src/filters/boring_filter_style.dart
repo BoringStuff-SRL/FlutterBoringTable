@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class BoringFilterStyle {
   final InputDecoration? textInputDecoration;
   final BoxDecoration? dropdownBoxDecoration;
+  final IconData? prefixIcon;
   final TextStyle? titleStyle;
   final TextStyle? hintStyle;
   final ButtonStyle? applyFiltersButtonStyle;
@@ -19,6 +20,7 @@ class BoringFilterStyle {
     this.dropdownBoxDecoration,
     this.hintStyle,
     this.titleStyle,
+    this.prefixIcon,
     this.applyFiltersButtonStyle,
     this.removeFiltersButtonStyle,
     this.applyFiltersText,

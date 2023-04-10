@@ -132,7 +132,7 @@ class BoringFilterDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       titlePadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 35),
       actionsPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       content: SizedBox(
         width: 700,
@@ -153,6 +153,7 @@ class BoringFilterDialog extends StatelessWidget {
           style: style?.removeFiltersButtonStyle,
           child: Text(style?.removeFiltersText ?? 'Remove filters'),
         ),
+        const SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
             setBuilder.call();

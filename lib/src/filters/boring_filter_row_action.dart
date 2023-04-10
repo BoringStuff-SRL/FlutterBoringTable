@@ -53,8 +53,8 @@ class BoringFilterRowAction<T> {
                 )
               : TextButton(
                   onPressed: () => onTap(item),
-                  child: Text(buttonText!),
                   style: buttonStyle,
+                  child: Text(buttonText!),
                 );
     }
 

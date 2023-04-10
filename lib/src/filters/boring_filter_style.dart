@@ -12,7 +12,6 @@ class BoringFilterStyle {
   final String? removeFiltersText;
   final Widget? openFiltersDialogWidget;
   final Text? filterDialogTitle;
-
   final Alignment? filterDialogTitleAlignment;
 
   BoringFilterStyle({

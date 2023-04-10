@@ -1,8 +1,5 @@
 import 'package:boring_table/boring_table.dart';
-import 'package:boring_table/models/models.dart';
 import 'package:flutter/material.dart';
-
-import 'boring_filter_row_action.dart';
 
 class BoringFilterTableHeader<T> extends StatefulWidget {
   const BoringFilterTableHeader(

@@ -1,10 +1,7 @@
-import 'package:boring_table/models/models.dart';
-import 'package:boring_table/src/boring_row_action.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../boring_table.dart';
-import 'boring_filter_row_action.dart';
 
 class BoringFilterTableBody<T> extends StatelessWidget {
   const BoringFilterTableBody(
@@ -65,11 +62,26 @@ class BoringFilterTableBody<T> extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
-          return Container(
-              color: index.isEven
-                  ? decoration?.evenRowColor
-                  : decoration?.oddRowColor,
-              child: (itemAtPosition(context, index)));
+          return Slidable(
+            key: ValueKey(index),
+            startActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                children: rowActions
+                    .map(
+                      (e) => SlidableAction(
+                        onPressed: (c) => onTap,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        label: e.buttonText,
+                        icon: Icons.add,
+                      ),
+                    )
+                    .toList()),
+            child: Container(
+                color: index.isEven
+                    ? decoration?.evenRowColor
+                    : decoration?.oddRowColor,
+                child: (itemAtPosition(context, index))),
+          );
         }),
       ),
     );

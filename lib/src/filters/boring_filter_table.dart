@@ -1,9 +1,7 @@
 import 'dart:math';
+
 import 'package:boring_table/models/models.dart';
-import 'package:boring_table/src/boring_row_action.dart';
-import 'package:boring_table/src/boring_table_body.dart';
 import 'package:boring_table/src/boring_table_decoration.dart';
-import 'package:boring_table/src/boring_table_header.dart';
 import 'package:boring_table/src/boring_table_title.dart';
 import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/src/filters/boring_filter_dialog.dart';
@@ -16,7 +14,7 @@ import 'boring_filter_row_action.dart';
 import 'boring_filter_style.dart';
 
 class BoringFilterTable<T> extends StatefulWidget {
-  BoringFilterTable(
+  const BoringFilterTable(
       {super.key,
       this.onTap,
       this.title,
@@ -118,7 +116,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         minWidth,
       );
       return Card(
-        elevation: widget.cardElevation ?? 8,
+        elevation: widget.cardElevation ?? 38,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.hardEdge,
         shape: widget.shape ??

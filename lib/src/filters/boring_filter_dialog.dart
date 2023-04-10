@@ -1,9 +1,6 @@
 import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/src/filters/boring_filter_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class BoringFilterDialog extends StatelessWidget {
   const BoringFilterDialog({
@@ -72,7 +69,7 @@ class BoringFilterDialog extends StatelessWidget {
                         decoration: style?.textInputDecoration?.copyWith(
                                 hintText: filter.hintText,
                                 hintStyle: style?.hintStyle) ??
-                            InputDecoration(),
+                            const InputDecoration(),
                         controller: controller,
                         onChanged: (value) {
                           if (value == '') {
@@ -128,50 +125,40 @@ class BoringFilterDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: Align(
+        alignment: style?.filterDialogTitleAlignment ?? Alignment.center,
+        child: style?.filterDialogTitle ?? const SizedBox.shrink(),
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
       content: SizedBox(
         width: 700,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Wrap(
+          runAlignment: WrapAlignment.center,
+          spacing: 10,
           children: [
-            Align(
-              alignment: style?.filterDialogTitleAlignment ?? Alignment.center,
-              child: style?.filterDialogTitle ?? const SizedBox.shrink(),
-            ),
-            Wrap(
-              runAlignment: WrapAlignment.center,
-              spacing: 10,
-              children: [
-                ...getWidgets(),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _removeAllFilters();
-                    Navigator.pop(context);
-                  },
-                  style: style?.removeFiltersButtonStyle,
-                  child: Text(style?.removeFiltersText ?? 'Remove filters'),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setBuilder.call();
-                    Navigator.pop(context);
-                  },
-                  style: style?.applyFiltersButtonStyle,
-                  child: Text(style?.applyFiltersText ?? 'Apply filters'),
-                ),
-              ],
-            ),
+            ...getWidgets(),
           ],
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            _removeAllFilters();
+            Navigator.pop(context);
+          },
+          style: style?.removeFiltersButtonStyle,
+          child: Text(style?.removeFiltersText ?? 'Remove filters'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setBuilder.call();
+            Navigator.pop(context);
+          },
+          style: style?.applyFiltersButtonStyle,
+          child: Text(style?.applyFiltersText ?? 'Apply filters'),
+        ),
+      ],
     );
   }
 }

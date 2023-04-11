@@ -75,7 +75,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
   final ValueNotifier<Map<TableHeaderElement, bool>> _buildHeaderList =
-  ValueNotifier({});
+      ValueNotifier({});
 
   double get minWidth => widget.minWidth ?? widget.headerRow.length * 200.0;
 
@@ -119,11 +119,8 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     _rowBuilder = (context, index) => widget.toTableRow!(filteredItems[index]);
   }
 
-
-
   @override
   void didUpdateWidget(covariant BoringFilterTable<T> oldWidget) {
-    //print("boring table has updated");
     setBuilder();
     super.didUpdateWidget(oldWidget);
   }

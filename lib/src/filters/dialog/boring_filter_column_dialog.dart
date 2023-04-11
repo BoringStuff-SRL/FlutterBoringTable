@@ -98,14 +98,32 @@ class BoringFilterColumnDialog extends StatelessWidget {
         ],
       );
 
+  bool _isLast() {
+    List<bool> flag = [];
+
+    _tempMap.forEach((key, v) {
+      if (v.value) {
+        flag.add(v.value);
+      }
+    });
+
+    return flag.length <= 1;
+  }
+
   List<Widget> _generateRow() {
     final List<Widget> list = [];
     _tempMap.forEach((key, value) {
       list.add(MouseRegion(
         child: GestureDetector(
-          onTap: () => _tempMap[key]!.value = !(_tempMap[key]!.value),
+          onTap: () {
+            if (!_tempMap[key]!.value) {
+              _tempMap[key]!.value = !(_tempMap[key]!.value);
+            } else if (!_isLast()) {
+              _tempMap[key]!.value = !(_tempMap[key]!.value);
+            }
+          },
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               children: [
                 ValueListenableBuilder(

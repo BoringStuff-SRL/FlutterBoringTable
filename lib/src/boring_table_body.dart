@@ -65,13 +65,14 @@ class BoringTableBody extends StatelessWidget {
           return Slidable(
             key: ValueKey(index),
             startActionPane: ActionPane(
+                extentRatio: 0.35,
                 motion: const ScrollMotion(),
                 children: rowActions
                     .map((e) => SlidableAction(
                         onPressed: (c) => onTap,
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         label: e.buttonText,
-                        icon: (e.icon as Icon).icon))
+                        icon: (e.icon as Icon?)?.icon))
                     .toList()),
             child: Container(
                 color: index.isEven

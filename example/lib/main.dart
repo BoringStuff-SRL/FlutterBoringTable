@@ -171,22 +171,21 @@ class ExampleBody extends StatelessWidget {
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [
+        BoringFilterRowAction(
+            icon: Icon(Icons.add),
+            buttonText: "svuota",
+            onTap: (c) {
+              print((c as Person).name);
+            }),
+        BoringFilterRowAction(
+            icon: Icon(Icons.add),
+            buttonText: "carica",
+            onTap: (c) {
+              print((c as Person).name);
+            }),
+        BoringFilterRowAction(
 
-        BoringFilterRowAction(
-            icon: Icon(Icons.add),
-            buttonText: "elimina",
-            onTap: (c) {
-              print((c as Person).name);
-            }),
-        BoringFilterRowAction(
-            icon: Icon(Icons.add),
-            buttonText: "modifica",
-            onTap: (c) {
-              print((c as Person).name);
-            }),
-        BoringFilterRowAction(
-            icon: Icon(Icons.add),
-            buttonText: "cambia stato",
+            buttonText: "quantità",
             onTap: (c) {
               print((c as Person).name);
             }),

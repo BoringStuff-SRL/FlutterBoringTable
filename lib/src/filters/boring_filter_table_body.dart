@@ -92,6 +92,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
             key: ValueKey(index),
             startActionPane: rowActions.isNotEmpty
                 ? ActionPane(
+                    extentRatio: 0.35,
                     motion: const ScrollMotion(),
                     children: rowActions
                         .map((e) => SlidableAction(
@@ -99,7 +100,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             label: e.buttonText,
-                            icon: (e.icon as Icon).icon))
+                            icon: (e.icon as Icon?)?.icon))
                         .toList())
                 : null,
             child: Container(

@@ -119,6 +119,13 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
       ValueNotifier({});
 
   @override
+  void didUpdateWidget(covariant BoringFilterTable<T> oldWidget) {
+    print("boring table has updated");
+    setBuilder();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final maxWidth = max(

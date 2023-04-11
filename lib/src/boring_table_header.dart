@@ -45,7 +45,7 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
   }
 
   void afterBuild() {
-    print("HERE");
+    //print("HERE");
     if (built) return;
     setState(() {
       built = true;

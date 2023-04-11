@@ -4,6 +4,7 @@ import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_table_decoration.dart';
 import 'package:boring_table/src/boring_table_title.dart';
 import 'package:boring_table/src/filters/boring_filter.dart';
+import 'package:boring_table/src/filters/boring_filter_column_dialog.dart';
 import 'package:boring_table/src/filters/boring_filter_dialog.dart';
 import 'package:boring_table/src/filters/boring_filter_table_body.dart';
 import 'package:boring_table/src/filters/boring_filter_table_header.dart';
@@ -80,6 +81,11 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     _controllers = LinkedScrollControllerGroup();
     _first = _controllers.addAndGet();
     _second = _controllers.addAndGet();
+
+    for (var e in widget.headerRow) {
+      _buildHeaderList.value.addEntries({e: true}.entries);
+    }
+
     setBuilder();
   }
 
@@ -105,8 +111,12 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
       }
     }
     _rowCount = (filteredItems.length);
+
     _rowBuilder = (context, index) => widget.toTableRow!(filteredItems[index]);
   }
+
+  final ValueNotifier<Map<TableHeaderElement, bool>> _buildHeaderList =
+      ValueNotifier({});
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +139,25 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                 ? widget.filters != null
                     ? Row(
                         children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                  onTap: () {
+                                    BoringFilterColumnDialog.showColumnDialog(
+                                      context,
+                                      headerRow: _buildHeaderList.value,
+                                      setBuilder: () {
+                                        setState(() {
+                                          setBuilder();
+                                        });
+                                      },
+                                      style: widget.filterStyle,
+                                    );
+                                  },
+                                  child: const Icon(Icons.add))),
                           Expanded(
                             child: widget.title!,
                           ),
@@ -176,7 +205,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                             maxWidth: maxWidth,
                             rawItems: filteredItems,
                             rowBuilder: _rowBuilder,
-                            headerRow: widget.headerRow,
+                            headerRow: _buildHeaderList.value,
                             groupActionsMenuShape: widget.groupActionsMenuShape,
                             rowCount: _rowCount,
                             groupActions: widget.groupActions,
@@ -200,7 +229,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: BoringFilterTableHeader(
           decoration: widget.decoration,
-          rowHeader: widget.headerRow,
+          rowHeader: _buildHeaderList.value,
           rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
           groupActions: widget.groupActions,
           rowActions: widget.rowActions,

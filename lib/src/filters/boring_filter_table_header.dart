@@ -11,7 +11,7 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
       required this.rowActionsColumnLabel,
       required this.rawItems});
 
-  final List<TableHeaderElement> rowHeader;
+  final Map<TableHeaderElement, bool> rowHeader;
   final List<BoringFilterRowAction>? rowActions;
   final String rowActionsColumnLabel;
   final BoringTableDecoration? decoration;
@@ -49,7 +49,7 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
   }
 
   void afterBuild() {
-    print("HERE");
+    //print("HERE");
     if (built) return;
     setState(() {
       built = true;
@@ -82,38 +82,42 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
   }
 
   Row actualRow(TextTheme textTheme) {
+    final List<Widget> list = [];
+    widget.rowHeader.forEach((key, value) {
+      if (value) {
+        list.add(Expanded(
+            flex: key.flex,
+            child: Text(
+              key.label,
+              textAlign: key.alignment,
+              style: widget.decoration?.headerTextStyle ??
+                  textTheme.titleMedium!.copyWith(
+                    color: Colors.grey.shade800,
+                  ),
+            )));
+      }
+    });
+
     return Row(children: [
-      ...widget.rowHeader
-          .map(
-            (item) => Expanded(
-                flex: item.flex,
-                child: Text(
-                  item.label,
-                  textAlign: item.alignment,
-                  style: widget.decoration?.headerTextStyle ??
-                      textTheme.titleMedium!.copyWith(
-                        color: Colors.grey.shade800,
-                      ),
-                )),
-          )
-          .toList(),
-      SizedBox(
-          width: _headerActionsKey.currentContext != null
-              ? widget.groupActions
-                  ? 85
-                  : (_headerActionsKey.currentContext!.findRenderObject()
-                          as RenderBox)
-                      .size
-                      .width
-              : 0,
-          child: Text(
-            widget.rowActionsColumnLabel,
-            textAlign: TextAlign.center,
-            style: widget.decoration?.headerTextStyle ??
-                textTheme.titleMedium!.copyWith(
-                  color: Colors.grey.shade800,
-                ),
-          ))
+      ...list,
+      if (widget.rowActions?.isNotEmpty ?? false)
+        SizedBox(
+            width: _headerActionsKey.currentContext != null
+                ? widget.groupActions
+                    ? 85
+                    : (_headerActionsKey.currentContext!.findRenderObject()
+                            as RenderBox)
+                        .size
+                        .width
+                : 0,
+            child: Text(
+              widget.rowActionsColumnLabel,
+              textAlign: TextAlign.center,
+              style: widget.decoration?.headerTextStyle ??
+                  textTheme.titleMedium!.copyWith(
+                    color: Colors.grey.shade800,
+                  ),
+            ))
     ]);
   }
 }

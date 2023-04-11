@@ -23,7 +23,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
   final double maxWidth;
   final List<T> rawItems;
   final List<Widget> Function(BuildContext context, int index) rowBuilder;
-  final List<TableHeaderElement> headerRow;
+  final Map<TableHeaderElement, bool> headerRow;
   final int rowCount;
   final void Function(T)? onTap;
   final List<BoringFilterRowAction<T>> rowActions;
@@ -38,10 +38,36 @@ class BoringFilterTableBody<T> extends StatelessWidget {
     return rowBuilder(context, index)
         .asMap()
         .entries
-        .map(
-          (item) => Expanded(flex: headerRow[item.key].flex, child: item.value),
-        )
+        .map((item) => canBuildColumn(item.key)
+            ? Expanded(flex: getColumnById(item.key).flex, child: item.value)
+            : Container())
         .toList();
+  }
+
+  bool canBuildColumn(int index) {
+    int x = 0;
+    bool flag = true;
+    headerRow.forEach((key, value) {
+      if (x == index) {
+        flag = value;
+      }
+      x++;
+    });
+
+    return flag;
+  }
+
+  TableHeaderElement getColumnById(int index) {
+    int x = 0;
+    TableHeaderElement column = TableHeaderElement(label: '');
+
+    headerRow.forEach((key, value) {
+      if (x == index) {
+        column = key;
+      }
+      x++;
+    });
+    return column;
   }
 
   Widget additionalActionsRow(BuildContext context, T item) => Row(
@@ -64,18 +90,18 @@ class BoringFilterTableBody<T> extends StatelessWidget {
         itemBuilder: ((context, index) {
           return Slidable(
             key: ValueKey(index),
-            startActionPane: ActionPane(
-                motion: const ScrollMotion(),
-                children: rowActions
-                    .map(
-                      (e) => SlidableAction(
-                        onPressed: (c) => onTap,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        label: e.buttonText,
-                        icon: Icons.add,
-                      ),
-                    )
-                    .toList()),
+            startActionPane: rowActions.isNotEmpty
+                ? ActionPane(
+                    motion: const ScrollMotion(),
+                    children: rowActions
+                        .map((e) => SlidableAction(
+                            onPressed: (c) => onTap,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            label: e.buttonText,
+                            icon: e.icon))
+                        .toList())
+                : null,
             child: Container(
                 color: index.isEven
                     ? decoration?.evenRowColor
@@ -106,10 +132,11 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        e.value.icon ?? Container(),
-                        const SizedBox(
-                          width: 7,
-                        ),
+                        if (e.value.icon != null) Icon(e.value.icon),
+                        if (e.value.icon != null)
+                          const SizedBox(
+                            width: 7,
+                          ),
                         Text(
                           e.value.buttonText ?? "",
                           style: actionGroupTextStyle,
@@ -148,13 +175,17 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ...buildRow(context, index),
-                    groupActions
-                        ? _buildActionsGroup(context, index)
-                        : additionalActionsRow(context, rawItems[index]),
+                    rowActions.isNotEmpty
+                        ? groupActions
+                            ? _buildActionsGroup(context, index)
+                            : additionalActionsRow(context, rawItems[index])
+                        : Container(),
                   ],
                 ),
               ),
-              if (decoration?.showDivider ?? false)
+              if ((decoration?.showDivider ?? false) &&
+                  decoration?.evenRowColor != null &&
+                  decoration?.oddRowColor != null)
                 Container(
                     color: decoration?.dividerColor ?? tx.dividerColor,
                     height: 0.7)

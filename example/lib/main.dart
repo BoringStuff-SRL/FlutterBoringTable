@@ -1,10 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/material.dart';
-import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:boring_table/boring_table.dart';
-import 'package:boring_table/src/filters/boring_filter_style.dart';
-import 'package:boring_table/src/filters/boring_filter_table.dart';
-import 'package:boring_table/src/filters/boring_filter_row_action.dart';
+import 'package:boring_table/src/filters/boring_filter.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +52,7 @@ class Example extends StatelessWidget {
 class Person {
   String name;
   String surname;
+
   Person({
     required this.name,
     required this.surname,
@@ -83,8 +81,8 @@ class ExampleBody extends StatelessWidget {
   }
 
   static final List<Person> userList = List.generate(
-    10000,
-    (index) => Person(name: '$index', surname: '$index'),
+    1,
+    (index) => Person(name: 'enzo', surname: 'valente'),
   );
 
   @override
@@ -95,6 +93,8 @@ class ExampleBody extends StatelessWidget {
       rowActionsColumnLabel: "More",
       toTableRow: (dynamic user) {
         return [
+          Text(user.name),
+          Text(user.name),
           Text(user.name),
           Text(user.surname),
         ];
@@ -170,9 +170,22 @@ class ExampleBody extends StatelessWidget {
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [
+
         BoringFilterRowAction(
-            icon: Icon(Icons.add),
-            buttonText: "asd",
+            icon: Icons.add,
+            buttonText: "elimina",
+            onTap: (c) {
+              print((c as Person).name);
+            }),
+        BoringFilterRowAction(
+            icon: Icons.add,
+            buttonText: "modifica",
+            onTap: (c) {
+              print((c as Person).name);
+            }),
+        BoringFilterRowAction(
+            icon: Icons.add,
+            buttonText: "cambia stato",
             onTap: (c) {
               print((c as Person).name);
             }),
@@ -188,21 +201,13 @@ class ExampleBody extends StatelessWidget {
   }
 }
 
-class RowElementClass extends BoringTableRowElement {
-  RowElementClass(this._user);
-
-  final Person _user;
+class RowElementClass {
+  RowElementClass();
 
   static final tableHeader = [
     TableHeaderElement(label: "Column A"),
     TableHeaderElement(label: "Column B"),
+    TableHeaderElement(label: "Column C"),
+    TableHeaderElement(label: "Column D"),
   ];
-
-  @override
-  List<Widget> toTableRow() {
-    return [
-      Text(_user.name),
-      Text(_user.surname),
-    ];
-  }
 }

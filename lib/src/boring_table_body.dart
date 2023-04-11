@@ -149,7 +149,9 @@ class BoringTableBody extends StatelessWidget {
                   ],
                 ),
               ),
-              if (decoration?.showDivider ?? false)
+              if ((decoration?.showDivider ?? false) &&
+                  decoration?.evenRowColor == null &&
+                  decoration?.oddRowColor == null)
                 Container(
                     color: decoration?.dividerColor ?? tx.dividerColor,
                     height: 0.7)

@@ -97,7 +97,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                     children: rowActions
                         .map((e) => SlidableAction(
                             foregroundColor: Colors.white,
-                            onPressed: (c) => onTap,
+                            onPressed: (c) => e.onTap,
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             label: e.buttonText,

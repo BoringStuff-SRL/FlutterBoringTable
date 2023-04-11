@@ -7,6 +7,7 @@ export 'src/boring_table_decoration.dart';
 export 'src/boring_table_title.dart';
 export 'src/filters/boring_filter.dart';
 export 'src/filters/boring_filter_row_action.dart';
-export 'src/filters/boring_filter_style.dart';
+export 'src/filters/decoration/boring_filter_style.dart';
+export 'src/filters/decoration/boring_filter_column_style.dart';
 export 'src/filters/boring_filter_table.dart';
 export 'src/filters/boring_filter_table_header.dart';

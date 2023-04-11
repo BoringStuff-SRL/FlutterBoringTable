@@ -90,6 +90,7 @@ class ExampleBody extends StatelessWidget {
     return BoringFilterTable<Person>(
       onTap: ((p0) => print("Tapped $p0")),
       headerRow: RowElementClass.tableHeader,
+      filterColumnStyle: BoringFilterColumnStyle(),
       rowActionsColumnLabel: "More",
       toTableRow: (dynamic user) {
         return [

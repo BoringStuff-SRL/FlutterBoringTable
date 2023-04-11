@@ -18,7 +18,7 @@ class BoringFilterRowAction<T> {
             "You can't set buttonStyle if buttonText is null");
 
   final String? svgAsset;
-  final IconData? icon;
+  final Widget? icon;
   final String? buttonText;
   final Function(T?) onTap;
   final ButtonStyle? buttonStyle;
@@ -42,7 +42,7 @@ class BoringFilterRowAction<T> {
       return _hasIcon()
           ? ElevatedButton.icon(
               onPressed: () => onTap(item),
-              icon: Icon(_icon()),
+              icon: _icon(),
               label: Text(buttonText!),
               style: buttonStyle)
           : fillButton

@@ -173,19 +173,19 @@ class ExampleBody extends StatelessWidget {
       rowActions: [
 
         BoringFilterRowAction(
-            icon: Icons.add,
+            icon: Icon(Icons.add),
             buttonText: "elimina",
             onTap: (c) {
               print((c as Person).name);
             }),
         BoringFilterRowAction(
-            icon: Icons.add,
+            icon: Icon(Icons.add),
             buttonText: "modifica",
             onTap: (c) {
               print((c as Person).name);
             }),
         BoringFilterRowAction(
-            icon: Icons.add,
+            icon: Icon(Icons.add),
             buttonText: "cambia stato",
             onTap: (c) {
               print((c as Person).name);

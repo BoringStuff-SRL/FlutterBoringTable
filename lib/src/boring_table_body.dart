@@ -68,10 +68,10 @@ class BoringTableBody extends StatelessWidget {
                 motion: const ScrollMotion(),
                 children: rowActions
                     .map((e) => SlidableAction(
-                    onPressed: (c) => onTap,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    label: e.buttonText,
-                    icon: e.icon))
+                        onPressed: (c) => onTap,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        label: e.buttonText,
+                        icon: (e.icon as Icon).icon))
                     .toList()),
             child: Container(
                 color: index.isEven
@@ -103,7 +103,7 @@ class BoringTableBody extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (e.value.icon != null) Icon(e.value.icon),
+                        if (e.value.icon != null) e.value.icon!,
                         if (e.value.icon != null) const SizedBox(width: 7),
                         Text(e.value.buttonText ?? "",
                             style: actionGroupTextStyle),

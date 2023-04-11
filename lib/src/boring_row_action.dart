@@ -18,7 +18,7 @@ class BoringRowAction {
             "You can't set buttonStyle if buttonText is null");
 
   final String? svgAsset;
-  final IconData? icon;
+  final Widget? icon;
   final String? buttonText;
   final Function(int) onTap;
   final ButtonStyle? buttonStyle;
@@ -42,7 +42,7 @@ class BoringRowAction {
       return _hasIcon()
           ? ElevatedButton.icon(
               onPressed: () => onTap(index),
-              icon: Icon(_icon()),
+              icon: _icon(),
               label: Text(buttonText!),
               style: buttonStyle)
           : fillButton

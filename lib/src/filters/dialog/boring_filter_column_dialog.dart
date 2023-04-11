@@ -154,6 +154,9 @@ class BoringFilterColumnDialog extends StatelessWidget {
   }
 
   void _removeAllFilters() {
+    _tempMap.forEach((k, v) {
+      headerRow[k] = true;
+    });
     setBuilder.call();
   }
 }

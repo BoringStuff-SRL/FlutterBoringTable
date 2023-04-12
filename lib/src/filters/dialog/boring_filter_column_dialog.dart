@@ -18,22 +18,18 @@ class BoringFilterColumnDialog extends StatelessWidget {
   final Map<TableHeaderElement, ValueNotifier<bool>> _tempMap = {};
 
   static void showColumnDialog(BuildContext context,
-      {required Map<TableHeaderElement, bool> headerRow,
-      required VoidCallback setBuilder,
-      BoringFilterColumnStyle? style}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return BoringFilterColumnDialog(
-              headerRow: headerRow, setBuilder: setBuilder, style: style);
-        });
-  }
+          {required Map<TableHeaderElement, bool> headerRow,
+          required VoidCallback setBuilder,
+          BoringFilterColumnStyle? style}) =>
+      showDialog(
+          context: context,
+          builder: (context) => BoringFilterColumnDialog(
+              headerRow: headerRow, setBuilder: setBuilder, style: style));
 
   @override
   Widget build(BuildContext context) {
-    headerRow.forEach((key, value) {
-      _tempMap.addEntries({key: ValueNotifier(value)}.entries);
-    });
+    headerRow.forEach((key, value) =>
+        _tempMap.addEntries({key: ValueNotifier(value)}.entries));
     return AlertDialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -57,7 +53,7 @@ class BoringFilterColumnDialog extends StatelessWidget {
           child: Text(style?.removeText ?? 'Remove',
               style: style?.removeFiltersTextStyle),
         ),
-        const SizedBox(width: 15),
+        const SizedBox(width: 10),
         ElevatedButton(
           onPressed: () {
             _applyChange();
@@ -98,18 +94,6 @@ class BoringFilterColumnDialog extends StatelessWidget {
         ],
       );
 
-  bool _isLast() {
-    List<bool> flag = [];
-
-    _tempMap.forEach((key, v) {
-      if (v.value) {
-        flag.add(v.value);
-      }
-    });
-
-    return flag.length <= 1;
-  }
-
   List<Widget> _generateRow() {
     final List<Widget> list = [];
     _tempMap.forEach((key, value) {
@@ -123,20 +107,27 @@ class BoringFilterColumnDialog extends StatelessWidget {
             }
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Column(
               children: [
-                ValueListenableBuilder(
-                  valueListenable: value,
-                  builder: (BuildContext context, bool v, Widget? child) {
-                    return v
-                        ? style?.checkIcon ?? const Icon(Icons.check_box)
-                        : style?.unCheckIcon ??
-                            const Icon(Icons.check_box_outline_blank_outlined);
-                  },
+                Row(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: value,
+                      builder: (BuildContext context, bool v, Widget? child) {
+                        return v
+                            ? style?.checkIcon ?? const Icon(Icons.check_box)
+                            : style?.unCheckIcon ??
+                                const Icon(
+                                    Icons.check_box_outline_blank_outlined);
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    Text(key.label, style: style?.checkTextStyle)
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Text(key.label, style: style?.checkTextStyle),
+                const SizedBox(height: 5),
+                const Divider()
               ],
             ),
           ),
@@ -146,17 +137,25 @@ class BoringFilterColumnDialog extends StatelessWidget {
     return list;
   }
 
-  void _applyChange() {
-    _tempMap.forEach((k, v) {
-      headerRow[k] = v.value;
+  bool _isLast() {
+    List<bool> flag = [];
+
+    _tempMap.forEach((key, v) {
+      if (v.value) {
+        flag.add(v.value);
+      }
     });
+
+    return flag.length <= 1;
+  }
+
+  void _applyChange() {
+    _tempMap.forEach((k, v) => headerRow[k] = v.value);
     setBuilder.call();
   }
 
   void _removeAllFilters() {
-    _tempMap.forEach((k, v) {
-      headerRow[k] = true;
-    });
+    _tempMap.forEach((k, v) => headerRow[k] = true);
     setBuilder.call();
   }
 }

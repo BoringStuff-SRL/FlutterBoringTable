@@ -99,9 +99,7 @@ class BoringTableBody extends StatelessWidget {
               .asMap()
               .entries
               .map((e) => PopupMenuItem(
-                    onTap: () {
-                      e.value.onTap.call(index);
-                    },
+                    onTap: () => e.value.onTap.call(index),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

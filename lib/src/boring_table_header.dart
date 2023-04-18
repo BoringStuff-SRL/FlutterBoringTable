@@ -63,14 +63,12 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
       color: widget.decoration?.headerColor ?? Theme.of(context).primaryColor,
       child: Padding(
         padding: widget.decoration?.headerPadding ??
-            const EdgeInsets.symmetric(
-              horizontal: 35.0,
-              vertical: 23.0,
-            ),
+            const EdgeInsets.symmetric(horizontal: 35.0, vertical: 23.0),
         child: Stack(
           children: [
+            if(widget.rowActions != null && widget.rowActions!.isNotEmpty)
             Offstage(offstage: true, child: additionalActionsRow(context, 0)),
-            actualRow(textTheme),
+            actualRow(textTheme)
           ],
         ),
       ),

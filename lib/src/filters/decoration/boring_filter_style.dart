@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class BoringFilterStyle {
   final InputDecoration? textInputDecoration;
+  final InputDecoration? searchDecoration;
   final BoxDecoration? dropdownBoxDecoration;
   final IconData? prefixIcon;
   final TextStyle? titleStyle;
@@ -35,5 +36,6 @@ class BoringFilterStyle {
       this.filterDialogTitle,
       this.filterDialogTitleAlignment,
       this.closeActiveIcon,
+      this.searchDecoration,
       this.closeIcon});
 }

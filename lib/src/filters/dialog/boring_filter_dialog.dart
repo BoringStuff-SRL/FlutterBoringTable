@@ -8,7 +8,8 @@ class BoringFilterDialog extends StatelessWidget {
     super.key,
     required this.filters,
     required this.setBuilder,
-    required this.style, this.searchMatchFunction,
+    required this.style,
+    this.searchMatchFunction,
   });
 
   final List<BoringFilter> filters;
@@ -134,8 +135,8 @@ class BoringFilterDialog extends StatelessWidget {
   List<Widget> getWidgets() {
     return filters
         .map((filter) {
-
-          final TextEditingController searchController = TextEditingController();
+          final TextEditingController searchController =
+              TextEditingController();
 
           switch (filter.type) {
             case BoringFilterType.text:
@@ -180,10 +181,8 @@ class BoringFilterDialog extends StatelessWidget {
                       focusColor: Colors.transparent,
                       buttonSplashColor: Colors.transparent,
                       buttonHighlightColor: Colors.transparent,
-                      buttonOverlayColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        return Colors.transparent;
-                      }),
+                      buttonOverlayColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.transparent),
                       dropdownMaxHeight: 250,
                       searchController: searchController,
                       items: filter.values!
@@ -198,21 +197,15 @@ class BoringFilterDialog extends StatelessWidget {
                       hint:
                           Text(filter.hintText ?? '', style: style?.hintStyle),
                       dropdownDecoration: style?.dropdownBoxDecoration,
-                      onChanged: ((value) {
-                        filter.valueController.setValue(value);
-                      }),
+                      onChanged: ((value) =>
+                          filter.valueController.setValue(value)),
                       searchInnerWidget: Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-
-                            Expanded(
-                              child: TextFormField(
-                                controller: searchController,
-
-                              ),
-                            ),
-                          ],
+                        child: Expanded(
+                          child: TextFormField(
+                            controller: searchController,
+                            decoration: style?.searchDecoration,
+                          ),
                         ),
                       ),
                       searchMatchFn: (item, searchValue) =>
@@ -222,7 +215,7 @@ class BoringFilterDialog extends StatelessWidget {
                           _onMenuStateChange(isOpen, searchController),
                     );
 
-                     Container(
+                    Container(
                       decoration: style?.dropdownBoxDecoration,
                       padding: const EdgeInsets.symmetric(
                           vertical: 4.5, horizontal: 8),
@@ -261,6 +254,5 @@ class BoringFilterDialog extends StatelessWidget {
 
   _onMenuStateChange(isOpen, searchEditController) =>
       !isOpen ? searchEditController.clear() : null;
-
 
 }

@@ -149,7 +149,7 @@ class ExampleBody extends StatelessWidget {
           valueController: BoringFilterValueController<String>(),
           hintText: 'Inserisci nome',
         ),
-        BoringDropdownFilter(
+        BoringDropdownMultiChoiceFilter(
           title: 'Cognome',
           values: [
             'asd',

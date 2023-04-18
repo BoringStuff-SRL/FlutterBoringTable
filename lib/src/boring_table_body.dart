@@ -58,7 +58,6 @@ class BoringTableBody extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: ListView.builder(
-        prototypeItem: rowCount > 0 ? itemAtPosition(context, 0) : null,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
@@ -139,6 +138,7 @@ class BoringTableBody extends StatelessWidget {
                         horizontal: 35.0, vertical: dense ? 30 : 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ...buildRow(context, index),
                     groupActions

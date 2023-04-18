@@ -9,14 +9,12 @@ class BoringFilterDialog extends StatelessWidget {
     required this.filters,
     required this.setBuilder,
     required this.style,
-    this.searchMatchFunction,
   });
 
   final List<BoringFilter> filters;
   final VoidCallback setBuilder;
   final BoringFilterStyle? style;
   final ValueNotifier<bool> _isHovered = ValueNotifier(false);
-  final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
 
   static void showFiltersDialog(
     BuildContext context, {
@@ -113,7 +111,7 @@ class BoringFilterDialog extends StatelessWidget {
 
   void _removeAllFilters() {
     for (var filter in filters) {
-      filter.valueController.setValue(null);
+      filter.valueController.reset();
     }
     setBuilder.call();
   }
@@ -190,8 +188,7 @@ class BoringFilterDialog extends StatelessWidget {
                               child: Text(filter
                                   .showingValues![filter.values!.indexOf(e)])))
                           .toList(),
-                      hint:
-                          Text(filter.hintText ?? '', style: style?.hintStyle),
+                      hint: Text(filter.hintText, style: style?.hintStyle),
                       dropdownDecoration: style?.dropdownBoxDecoration,
                       onChanged: ((value) =>
                           filter.valueController.setValue(value)),
@@ -203,7 +200,9 @@ class BoringFilterDialog extends StatelessWidget {
                         ),
                       ),
                       searchMatchFn: (item, searchValue) =>
-                          searchMatchFunction?.call(item, searchValue) ??
+                          (filter as BoringDropdownFilter)
+                              .searchMatchFn
+                              ?.call(item, searchValue) ??
                           _searchDefaultMatchFn(item, searchValue),
                       onMenuStateChange: (isOpen) =>
                           _onMenuStateChange(isOpen, searchController),
@@ -221,7 +220,7 @@ class BoringFilterDialog extends StatelessWidget {
                   valueListenable: filter.valueController,
                   builder: (context, value, child) {
                     return DropdownButtonFormField2(
-                      dropdownOverButton: true,
+                      dropdownOverButton: false,
                       isExpanded: true,
                       searchInnerWidgetHeight: 20,
                       dropdownElevation: 0,
@@ -236,41 +235,72 @@ class BoringFilterDialog extends StatelessWidget {
                       dropdownMaxHeight: 250,
                       searchController: searchController,
                       items: filter.values!.map((e) {
-                        ValueNotifier<bool> isChecked = ValueNotifier(false);
                         return DropdownMenuItem(
-                            value: e,
-                            child: Row(
-                              children: [
-                                ValueListenableBuilder(
-                                    valueListenable: isChecked,
-                                    builder: (BuildContext context, bool value,
-                                        Widget? child) {
-                                      if (value) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              isChecked.value = false;
-                                            },
-                                            child: style?.checkIcon ??
-                                                Icon(Icons.check_box));
-                                      }
-                                      return GestureDetector(
-                                        onTap: () {
-                                          isChecked.value = true;
-                                        },
-                                        child: style?.unCheckIcon ??
-                                            Icon(Icons.check_box_outline_blank),
-                                      );
-                                    }),
-                                const SizedBox(width: 8),
-                                Text(filter
-                                    .showingValues![filter.values!.indexOf(e)]),
-                              ],
-                            ));
+                          value: e,
+                          child: StatefulBuilder(
+                            builder: (context, menuState) {
+                              final isSelected =
+                                  (filter.valueController.value as List)
+                                      .contains(e);
+
+                              return GestureDetector(
+                                onTap: () {
+                                  if (!isSelected) {
+                                    (filter.valueController.value as List)
+                                        .add(e);
+                                  } else {
+                                    (filter.valueController.value as List)
+                                        .remove(e);
+                                  }
+
+                                  filter.valueController.sendNotification();
+                                  menuState(() {});
+                                },
+                                child: SizedBox(
+                                  height: double.infinity,
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Row(
+                                      children: [
+                                        isSelected
+                                            ? style?.checkIcon ??
+                                                Icon(Icons.check_box)
+                                            : style?.unCheckIcon ??
+                                                Icon(Icons
+                                                    .check_box_outline_blank),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(filter.showingValues![
+                                              filter.values!.indexOf(e)]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
                       }).toList(),
-                      hint:
-                          Text(filter.hintText ?? '', style: style?.hintStyle),
+                      hint: Text(filter.hintText, style: style?.hintStyle),
                       dropdownDecoration: style?.dropdownBoxDecoration,
                       onChanged: (value) {},
+                      selectedItemBuilder: (context) {
+                        print(
+                          (filter.valueController.value as List)
+                              .map((e) => filter
+                                  .showingValues![filter.values!.indexOf(e)])
+                              .join(', '),
+                        );
+                        return [
+                          Text(
+                            (filter.valueController.value as List)
+                                .map((e) => filter
+                                    .showingValues![filter.values!.indexOf(e)])
+                                .join(', '),
+                          ),
+                        ];
+                      },
                       searchInnerWidget: Padding(
                         padding: const EdgeInsets.all(10),
                         child: TextFormField(
@@ -279,7 +309,9 @@ class BoringFilterDialog extends StatelessWidget {
                         ),
                       ),
                       searchMatchFn: (item, searchValue) =>
-                          searchMatchFunction?.call(item, searchValue) ??
+                          (filter as BoringDropdownMultiChoiceFilter)
+                              .searchMatchFn
+                              ?.call(item, searchValue) ??
                           _searchDefaultMatchFn(item, searchValue),
                       onMenuStateChange: (isOpen) =>
                           _onMenuStateChange(isOpen, searchController),

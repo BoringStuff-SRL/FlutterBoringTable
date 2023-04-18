@@ -151,6 +151,12 @@ class ExampleBody extends StatelessWidget {
         ),
         BoringDropdownMultiChoiceFilter(
           title: 'Cognome',
+          searchMatchFn: (dropdownMenuItem, value) {
+            return dropdownMenuItem.value
+                .toString()
+                .toLowerCase()
+                .contains(value.toLowerCase());
+          },
           values: [
             'asd',
             'qwe',
@@ -160,12 +166,15 @@ class ExampleBody extends StatelessWidget {
             'qwe',
           ],
           where: (element, controller) {
-            if (controller.value != null) {
-              return element.surname.contains(controller.value);
+            if (controller.value != null &&
+                (controller.value as List).isNotEmpty) {
+              print(controller.value);
+              return (controller.value as List).contains(element.name);
             }
             return true;
           },
-          valueController: BoringFilterValueController<String>(),
+          valueController:
+              BoringFilterValueController<List<String>>(initialValue: []),
           hintText: 'Seleziona cognome',
         ),
       ],
@@ -184,7 +193,6 @@ class ExampleBody extends StatelessWidget {
               print((c as Person).name);
             }),
         BoringFilterRowAction(
-
             buttonText: "quantità",
             onTap: (c) {
               print((c as Person).name);

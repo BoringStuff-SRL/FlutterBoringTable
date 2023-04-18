@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 abstract class BoringFilter<T> {
   bool Function(T element, BoringFilterValueController valueController) where;
@@ -49,7 +50,16 @@ class BoringDropdownFilter<T> extends BoringFilter<T> {
     required super.hintText,
     required super.values,
     required super.showingValues,
-  }) : super(type: BoringFilterType.dropdown);
+    this.searchMatchFn,
+  }) : super(type: BoringFilterType.dropdown) {
+    assert(valueController is BoringFilterValueController<List>,
+        'The type of the value for the valueController must be a List');
+    assert(valueController.value != null,
+        "Please give an initialValue to the value controller. It can also be [] (empty list)");
+  }
+
+  bool Function(DropdownMenuItem<dynamic> dropdownMenuItem, String value)?
+      searchMatchFn;
 }
 
 class BoringDropdownMultiChoiceFilter<T> extends BoringFilter<T> {
@@ -60,7 +70,16 @@ class BoringDropdownMultiChoiceFilter<T> extends BoringFilter<T> {
     required super.hintText,
     required super.values,
     required super.showingValues,
-  }) : super(type: BoringFilterType.dropdownMultiChoice);
+    this.searchMatchFn,
+  }) : super(type: BoringFilterType.dropdownMultiChoice) {
+    assert(valueController is BoringFilterValueController<List>,
+        'The type of the value for the valueController must be a List');
+    assert(valueController.value != null,
+        "Please give an initialValue to the value controller. It can also be [] (empty list)");
+  }
+
+  bool Function(DropdownMenuItem<dynamic> dropdownMenuItem, String value)?
+      searchMatchFn;
 }
 
 class BoringFilterValueController<T> extends ValueNotifier<T?> {
@@ -68,6 +87,20 @@ class BoringFilterValueController<T> extends ValueNotifier<T?> {
 
   void setValue(T? val) {
     super.value = val;
+    notifyListeners();
+  }
+
+  void reset() {
+    print(value.runtimeType);
+    if (value is List) {
+      (value as List).clear();
+    } else {
+      value = null;
+    }
+    notifyListeners();
+  }
+
+  void sendNotification() {
     notifyListeners();
   }
 }

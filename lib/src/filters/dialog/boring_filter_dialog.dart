@@ -176,7 +176,7 @@ class BoringFilterDialog extends StatelessWidget {
                       searchInnerWidgetHeight: 20,
                       dropdownElevation: 0,
                       decoration: style?.textInputDecoration,
-                      buttonHeight: 50,
+                      buttonHeight: 17,
                       itemHeight: 50,
                       focusColor: Colors.transparent,
                       buttonSplashColor: Colors.transparent,
@@ -186,13 +186,10 @@ class BoringFilterDialog extends StatelessWidget {
                       dropdownMaxHeight: 250,
                       searchController: searchController,
                       items: filter.values!
-                          .map(
-                            (e) => DropdownMenuItem(
+                          .map((e) => DropdownMenuItem(
                               value: e,
                               child: Text(filter
-                                  .showingValues![filter.values!.indexOf(e)]),
-                            ),
-                          )
+                                  .showingValues![filter.values!.indexOf(e)])))
                           .toList(),
                       hint:
                           Text(filter.hintText ?? '', style: style?.hintStyle),
@@ -201,11 +198,9 @@ class BoringFilterDialog extends StatelessWidget {
                           filter.valueController.setValue(value)),
                       searchInnerWidget: Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Expanded(
-                          child: TextFormField(
-                            controller: searchController,
-                            decoration: style?.searchDecoration,
-                          ),
+                        child: TextFormField(
+                          controller: searchController,
+                          decoration: style?.searchDecoration,
                         ),
                       ),
                       searchMatchFn: (item, searchValue) =>
@@ -254,5 +249,4 @@ class BoringFilterDialog extends StatelessWidget {
 
   _onMenuStateChange(isOpen, searchEditController) =>
       !isOpen ? searchEditController.clear() : null;
-
 }

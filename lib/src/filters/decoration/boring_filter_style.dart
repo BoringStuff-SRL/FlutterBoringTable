@@ -16,8 +16,8 @@ class BoringFilterStyle {
   final Widget? openFiltersDialogWidget;
   final Text? filterDialogTitle;
   final Alignment? filterDialogTitleAlignment;
-  final IconData? closeIcon;
-  final Color? iconColor;
+  final Widget? closeIcon;
+  final Widget? closeActiveIcon;
 
   BoringFilterStyle(
       {this.textInputDecoration,
@@ -34,6 +34,6 @@ class BoringFilterStyle {
       this.removeFiltersText,
       this.filterDialogTitle,
       this.filterDialogTitleAlignment,
-      this.iconColor,
+      this.closeActiveIcon,
       this.closeIcon});
 }

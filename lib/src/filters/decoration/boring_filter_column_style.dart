@@ -13,8 +13,8 @@ class BoringFilterColumnStyle {
   final String? applyText;
   final String? removeText;
   final Widget? filterIcon;
-  final IconData? closeIcon;
-  final Color? iconColor;
+  final Widget? closeActiveIcon;
+  final Widget? closeIcon;
 
   BoringFilterColumnStyle(
       {this.title,
@@ -28,6 +28,5 @@ class BoringFilterColumnStyle {
       this.applyText,
       this.removeText,
       this.filterIcon,
-      this.iconColor,
-      this.closeIcon});
+      this.closeActiveIcon, this.closeIcon});
 }

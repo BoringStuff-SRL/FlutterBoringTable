@@ -33,6 +33,7 @@ class BoringFilterColumnDialog extends StatelessWidget {
     return AlertDialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      insetPadding: const EdgeInsets.all(8),
       titlePadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       contentPadding: const EdgeInsets.symmetric(horizontal: 35),
       actionsPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
@@ -85,10 +86,11 @@ class BoringFilterColumnDialog extends StatelessWidget {
                   child: ValueListenableBuilder(
                     valueListenable: _isHovered,
                     builder: (BuildContext context, bool value, Widget? child) {
-                      return Icon(style?.closeIcon ?? Icons.clear,
-                          color: value
-                              ? Colors.red[700]
-                              : style?.iconColor ?? Colors.black);
+                      if (value) {
+                        return style?.closeActiveIcon ??
+                            const Icon(Icons.clear);
+                      }
+                      return style?.closeIcon ?? const Icon(Icons.clear);
                     },
                   )))
         ],

@@ -171,12 +171,12 @@ class BoringFilterDialog extends StatelessWidget {
                   valueListenable: filter.valueController,
                   builder: (context, value, child) {
                     return DropdownButtonFormField2(
-                      dropdownOverButton: false,
+                      dropdownOverButton: true,
                       isExpanded: true,
                       searchInnerWidgetHeight: 20,
                       dropdownElevation: 0,
                       decoration: style?.textInputDecoration,
-                      buttonHeight: 17,
+                      buttonHeight: 20,
                       itemHeight: 50,
                       focusColor: Colors.transparent,
                       buttonSplashColor: Colors.transparent,

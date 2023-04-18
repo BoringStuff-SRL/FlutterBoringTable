@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BoringFilterRowAction<T> {
-  const BoringFilterRowAction({required this.onTap,
-    this.svgAsset,
-    this.icon,
-    this.buttonStyle,
-    this.tooltip,
-    this.textColor,
-    this.fillButton = false,
-    this.buttonText})
+  const BoringFilterRowAction(
+      {required this.onTap,
+      this.svgAsset,
+      this.icon,
+      this.buttonStyle,
+      this.tooltip,
+      this.textColor,
+      this.fillButton = false,
+      this.buttonText})
       : assert(icon == null || svgAsset == null,
-  "You can't set both svgAsset and icon"),
+            "You can't set both svgAsset and icon"),
         assert(svgAsset != null || icon != null || buttonText != null,
-        "You have to set at least one parameter between icon, svgAsser or buttonText"),
+            "You have to set at least one parameter between icon, svgAsser or buttonText"),
         assert(buttonStyle == null || buttonText != null,
-        "You can't set buttonStyle if buttonText is null");
+            "You can't set buttonStyle if buttonText is null");
 
   final String? svgAsset;
-  final Widget? icon;
+  final Icon? icon;
   final String? buttonText;
   final Function(T?) onTap;
   final ButtonStyle? buttonStyle;
@@ -30,11 +31,11 @@ class BoringFilterRowAction<T> {
 
   _icon() =>
       icon ??
-          SvgPicture.asset(
-            svgAsset!,
-            height: svgHeight,
-            width: svgWidth,
-          );
+      SvgPicture.asset(
+        svgAsset!,
+        height: svgHeight,
+        width: svgWidth,
+      );
 
   bool _hasIcon() => icon != null || svgAsset != null;
 
@@ -42,21 +43,21 @@ class BoringFilterRowAction<T> {
     if (buttonText != null) {
       return _hasIcon()
           ? ElevatedButton.icon(
-          onPressed: () => onTap(item),
-          icon: _icon(),
-          label: Text(buttonText!, style: TextStyle(color: textColor)),
-          style: buttonStyle)
+              onPressed: () => onTap(item),
+              icon: _icon(),
+              label: Text(buttonText!, style: TextStyle(color: textColor)),
+              style: buttonStyle)
           : fillButton
-          ? ElevatedButton(
-        onPressed: () => onTap(item),
-        style: buttonStyle,
-        child: Text(buttonText!),
-      )
-          : TextButton(
-        onPressed: () => onTap(item),
-        style: buttonStyle,
-        child: Text(buttonText!, style: TextStyle(color: textColor)),
-      );
+              ? ElevatedButton(
+                  onPressed: () => onTap(item),
+                  style: buttonStyle,
+                  child: Text(buttonText!),
+                )
+              : TextButton(
+                  onPressed: () => onTap(item),
+                  style: buttonStyle,
+                  child: Text(buttonText!, style: TextStyle(color: textColor)),
+                );
     }
 
     return InkWell(

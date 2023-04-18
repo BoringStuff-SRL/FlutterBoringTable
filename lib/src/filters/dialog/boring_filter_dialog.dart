@@ -1,4 +1,5 @@
 import 'package:boring_table/src/filters/boring_filter.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import '../decoration/boring_filter_style.dart';
 
@@ -7,13 +8,14 @@ class BoringFilterDialog extends StatelessWidget {
     super.key,
     required this.filters,
     required this.setBuilder,
-    required this.style,
+    required this.style, this.searchMatchFunction,
   });
 
   final List<BoringFilter> filters;
   final VoidCallback setBuilder;
   final BoringFilterStyle? style;
   final ValueNotifier<bool> _isHovered = ValueNotifier(false);
+  final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
 
   static void showFiltersDialog(
     BuildContext context, {
@@ -132,6 +134,9 @@ class BoringFilterDialog extends StatelessWidget {
   List<Widget> getWidgets() {
     return filters
         .map((filter) {
+
+          final TextEditingController searchController = TextEditingController();
+
           switch (filter.type) {
             case BoringFilterType.text:
               final controller =
@@ -164,7 +169,60 @@ class BoringFilterDialog extends StatelessWidget {
                 child: ValueListenableBuilder(
                   valueListenable: filter.valueController,
                   builder: (context, value, child) {
-                    return Container(
+                    return DropdownButtonFormField2(
+                      dropdownOverButton: false,
+                      isExpanded: true,
+                      searchInnerWidgetHeight: 20,
+                      dropdownElevation: 0,
+                      decoration: style?.textInputDecoration,
+                      buttonHeight: 50,
+                      itemHeight: 50,
+                      focusColor: Colors.transparent,
+                      buttonSplashColor: Colors.transparent,
+                      buttonHighlightColor: Colors.transparent,
+                      buttonOverlayColor:
+                          MaterialStateProperty.resolveWith((states) {
+                        return Colors.transparent;
+                      }),
+                      dropdownMaxHeight: 250,
+                      searchController: searchController,
+                      items: filter.values!
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(filter
+                                  .showingValues![filter.values!.indexOf(e)]),
+                            ),
+                          )
+                          .toList(),
+                      hint:
+                          Text(filter.hintText ?? '', style: style?.hintStyle),
+                      dropdownDecoration: style?.dropdownBoxDecoration,
+                      onChanged: ((value) {
+                        filter.valueController.setValue(value);
+                      }),
+                      searchInnerWidget: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+
+                            Expanded(
+                              child: TextFormField(
+                                controller: searchController,
+
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      searchMatchFn: (item, searchValue) =>
+                          searchMatchFunction?.call(item, searchValue) ??
+                          _searchDefaultMatchFn(item, searchValue),
+                      onMenuStateChange: (isOpen) =>
+                          _onMenuStateChange(isOpen, searchController),
+                    );
+
+                     Container(
                       decoration: style?.dropdownBoxDecoration,
                       padding: const EdgeInsets.symmetric(
                           vertical: 4.5, horizontal: 8),
@@ -197,4 +255,12 @@ class BoringFilterDialog extends StatelessWidget {
         .cast<Widget>()
         .toList();
   }
+
+  _searchDefaultMatchFn(item, searchValue) =>
+      item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
+
+  _onMenuStateChange(isOpen, searchEditController) =>
+      !isOpen ? searchEditController.clear() : null;
+
+
 }

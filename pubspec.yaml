@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  dropdown_button2:
+    git:
+      url: https://github.com/enzo-desimone/drop_down.git
+
   flutter_svg: ^2.0.5
   linked_scroll_controller: ^0.2.0
   flutter_slidable: ^3.0.0

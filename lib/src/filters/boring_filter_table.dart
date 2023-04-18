@@ -25,13 +25,13 @@ class BoringFilterTable<T> extends StatefulWidget {
       required this.filterColumnStyle,
       this.minWidth,
       this.decoration,
-      required this.filters,
+      this.filters = const [],
       required this.headerRow,
       required this.toTableRow,
       required this.rawItems,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
-      this.shape,
+      this.borderRadius,
       this.footer,
       this.cardElevation,
       this.groupActionsMenuShape,
@@ -48,7 +48,7 @@ class BoringFilterTable<T> extends StatefulWidget {
   final List<BoringFilterRowAction<T>> rowActions;
   final Widget? widgetWhenEmpty;
   final double? cardElevation;
-  final ShapeBorder? shape;
+  final double? borderRadius;
   final BoringTableDecoration? decoration;
   final Widget? footer;
   final bool groupActions;
@@ -136,10 +136,9 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         elevation: widget.cardElevation ?? 38,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.hardEdge,
-        shape: widget.shape ??
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
+        ),
         child: Column(
           children: [
             widget.title != null
@@ -169,26 +168,28 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                           Expanded(
                             child: widget.title!,
                           ),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () {
-                                BoringFilterDialog.showFiltersDialog(
-                                  context,
-                                  filters: widget.filters!,
-                                  setBuilder: () {
-                                    setState(() {
-                                      setBuilder();
-                                    });
-                                  },
-                                  style: widget.filterStyle,
-                                );
-                              },
-                              child:
-                                  widget.filterStyle.openFiltersDialogWidget ??
-                                      const Icon(Icons.filter_alt_sharp),
+                          if (widget.filters != null &&
+                              widget.filters!.isNotEmpty)
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  BoringFilterDialog.showFiltersDialog(
+                                    context,
+                                    filters: widget.filters!,
+                                    setBuilder: () {
+                                      setState(() {
+                                        setBuilder();
+                                      });
+                                    },
+                                    style: widget.filterStyle,
+                                  );
+                                },
+                                child: widget
+                                        .filterStyle.openFiltersDialogWidget ??
+                                    const Icon(Icons.filter_alt_sharp),
+                              ),
                             ),
-                          ),
                           const SizedBox(
                             width: 20,
                           ),

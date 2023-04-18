@@ -18,7 +18,7 @@ class BoringRowAction {
             "You can't set buttonStyle if buttonText is null");
 
   final String? svgAsset;
-  final Widget? icon;
+  final Icon? icon;
   final String? buttonText;
   final Function(int) onTap;
   final ButtonStyle? buttonStyle;

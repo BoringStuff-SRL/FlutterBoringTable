@@ -73,7 +73,7 @@ class BoringTableBody extends StatelessWidget {
                         onPressed: (c) => e.onTap.call(index),
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         label: e.buttonText,
-                        icon: (e.icon as Icon?)?.icon))
+                        icon: (e.icon)?.icon))
                     .toList()),
             child: Container(
                 color: index.isEven

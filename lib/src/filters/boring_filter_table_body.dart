@@ -103,7 +103,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             label: e.buttonText,
-                            icon: (e.icon as Icon?)?.icon))
+                            icon: e.icon?.icon))
                         .toList())
                 : null,
             child: Container(

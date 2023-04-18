@@ -137,13 +137,20 @@ class BoringTableBody extends StatelessWidget {
                     EdgeInsets.symmetric(
                         horizontal: 35.0, vertical: dense ? 30 : 8),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ...buildRow(context, index),
-                    groupActions
-                        ? _buildActionsGroup(context, index)
-                        : additionalActionsRow(context, index),
+                    Flexible(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...buildRow(context, index),
+                      ],
+                    )),
+                    if (rowActions.isNotEmpty)
+                      groupActions
+                          ? _buildActionsGroup(context, index)
+                          : additionalActionsRow(context, index),
                   ],
                 ),
               ),

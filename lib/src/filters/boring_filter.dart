@@ -52,6 +52,17 @@ class BoringDropdownFilter<T> extends BoringFilter<T> {
   }) : super(type: BoringFilterType.dropdown);
 }
 
+class BoringDropdownMultiChoiceFilter<T> extends BoringFilter<T> {
+  BoringDropdownMultiChoiceFilter({
+    required super.where,
+    required super.valueController,
+    required super.title,
+    required super.hintText,
+    required super.values,
+    required super.showingValues,
+  }) : super(type: BoringFilterType.dropdownMultiChoice);
+}
+
 class BoringFilterValueController<T> extends ValueNotifier<T?> {
   BoringFilterValueController({T? initialValue}) : super(initialValue);
 
@@ -61,4 +72,4 @@ class BoringFilterValueController<T> extends ValueNotifier<T?> {
   }
 }
 
-enum BoringFilterType { text, dropdown }
+enum BoringFilterType { text, dropdown, dropdownMultiChoice }

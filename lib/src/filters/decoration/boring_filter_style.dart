@@ -19,6 +19,8 @@ class BoringFilterStyle {
   final Alignment? filterDialogTitleAlignment;
   final Widget? closeIcon;
   final Widget? closeActiveIcon;
+  final Widget? checkIcon;
+  final Widget? unCheckIcon;
 
   BoringFilterStyle(
       {this.textInputDecoration,
@@ -37,5 +39,7 @@ class BoringFilterStyle {
       this.filterDialogTitleAlignment,
       this.closeActiveIcon,
       this.searchDecoration,
-      this.closeIcon});
+      this.closeIcon,
+      this.checkIcon,
+      this.unCheckIcon});
 }

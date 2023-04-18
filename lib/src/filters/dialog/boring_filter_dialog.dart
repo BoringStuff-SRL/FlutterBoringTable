@@ -135,9 +135,6 @@ class BoringFilterDialog extends StatelessWidget {
   List<Widget> getWidgets() {
     return filters
         .map((filter) {
-          final TextEditingController searchController =
-              TextEditingController();
-
           switch (filter.type) {
             case BoringFilterType.text:
               final controller =
@@ -165,6 +162,8 @@ class BoringFilterDialog extends StatelessWidget {
                   });
 
             case BoringFilterType.dropdown:
+              final TextEditingController searchController =
+                  TextEditingController();
               return _wrapper(
                 title: filter.title,
                 child: ValueListenableBuilder(
@@ -209,31 +208,81 @@ class BoringFilterDialog extends StatelessWidget {
                       onMenuStateChange: (isOpen) =>
                           _onMenuStateChange(isOpen, searchController),
                     );
+                  },
+                ),
+              );
 
-                    Container(
-                      decoration: style?.dropdownBoxDecoration,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4.5, horizontal: 8),
-                      child: DropdownButton(
-                          value: value,
-                          hint: Text(
-                            filter.hintText,
-                            style: style?.hintStyle,
-                          ),
-                          isExpanded: true,
-                          underline: Container(),
-                          items: filter.values!
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(filter.showingValues![
-                                      filter.values!.indexOf(e)]),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            filter.valueController.setValue(value);
-                          }),
+            case BoringFilterType.dropdownMultiChoice:
+              final TextEditingController searchController =
+                  TextEditingController();
+              return _wrapper(
+                title: filter.title,
+                child: ValueListenableBuilder(
+                  valueListenable: filter.valueController,
+                  builder: (context, value, child) {
+                    return DropdownButtonFormField2(
+                      dropdownOverButton: true,
+                      isExpanded: true,
+                      searchInnerWidgetHeight: 20,
+                      dropdownElevation: 0,
+                      decoration: style?.textInputDecoration,
+                      buttonHeight: 20,
+                      itemHeight: 50,
+                      focusColor: Colors.transparent,
+                      buttonSplashColor: Colors.transparent,
+                      buttonHighlightColor: Colors.transparent,
+                      buttonOverlayColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.transparent),
+                      dropdownMaxHeight: 250,
+                      searchController: searchController,
+                      items: filter.values!.map((e) {
+                        ValueNotifier<bool> isChecked = ValueNotifier(false);
+                        return DropdownMenuItem(
+                            value: e,
+                            child: Row(
+                              children: [
+                                ValueListenableBuilder(
+                                    valueListenable: isChecked,
+                                    builder: (BuildContext context, bool value,
+                                        Widget? child) {
+                                      if (value) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              isChecked.value = false;
+                                            },
+                                            child: style?.checkIcon ??
+                                                Icon(Icons.check_box));
+                                      }
+                                      return GestureDetector(
+                                        onTap: () {
+                                          isChecked.value = true;
+                                        },
+                                        child: style?.unCheckIcon ??
+                                            Icon(Icons.check_box_outline_blank),
+                                      );
+                                    }),
+                                const SizedBox(width: 8),
+                                Text(filter
+                                    .showingValues![filter.values!.indexOf(e)]),
+                              ],
+                            ));
+                      }).toList(),
+                      hint:
+                          Text(filter.hintText ?? '', style: style?.hintStyle),
+                      dropdownDecoration: style?.dropdownBoxDecoration,
+                      onChanged: (value) {},
+                      searchInnerWidget: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextFormField(
+                          controller: searchController,
+                          decoration: style?.searchDecoration,
+                        ),
+                      ),
+                      searchMatchFn: (item, searchValue) =>
+                          searchMatchFunction?.call(item, searchValue) ??
+                          _searchDefaultMatchFn(item, searchValue),
+                      onMenuStateChange: (isOpen) =>
+                          _onMenuStateChange(isOpen, searchController),
                     );
                   },
                 ),

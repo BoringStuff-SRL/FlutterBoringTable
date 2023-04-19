@@ -140,6 +140,8 @@ class BoringFilterDialog extends StatelessWidget {
               return _dropdownSingleChoice(filter);
             case BoringFilterType.dropdownMultiChoice:
               return _dropdownMultiChoice(filter);
+            case BoringFilterType.chips:
+              return _chips(filter);
           }
         })
         .cast<Widget>()
@@ -199,7 +201,8 @@ class BoringFilterDialog extends StatelessWidget {
                 (states) => Colors.transparent),
             dropdownMaxHeight: 250,
             searchController: searchController,
-            items: filter.values!
+            items: (filter as BoringDropdownFilter)
+                .values!
                 .map((e) => DropdownMenuItem(
                     value: e,
                     child:
@@ -253,7 +256,7 @@ class BoringFilterDialog extends StatelessWidget {
                 (states) => Colors.transparent),
             dropdownMaxHeight: 250,
             searchController: searchController,
-            items: filter.values!.map((e) {
+            items: (filter as BoringDropdownMultiChoiceFilter).values!.map((e) {
               return DropdownMenuItem(
                 value: e,
                 child: StatefulBuilder(
@@ -326,6 +329,48 @@ class BoringFilterDialog extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _chips(BoringFilter filter) {
+    return _wrapper(
+      title: filter.title,
+      child: ValueListenableBuilder(
+        valueListenable: filter.valueController,
+        builder: (context, value, child) {
+          return ChipTheme(
+            data: style?.chipThemeData ?? const ChipThemeData(),
+            child: Wrap(
+              spacing: style?.chipSpacing ?? 10,
+              children: [
+                for (dynamic value in (filter as BoringChipFilter).values)
+                  _buildChip(filter, value),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  ChoiceChip _buildChip(BoringFilter filter, dynamic chipValue) {
+    bool isSelected =
+        (filter.valueController.value as List).contains(chipValue);
+    return ChoiceChip(
+      label: Text(
+        (filter as BoringChipFilter)
+            .showingValues[filter.values.indexOf(chipValue)],
+      ),
+      avatar: filter.chipIcon,
+      selected: isSelected,
+      onSelected: (value) {
+        if (value) {
+          (filter.valueController.value as List).add(chipValue);
+        } else {
+          (filter.valueController.value as List).remove(chipValue);
+        }
+        (filter.valueController.sendNotification());
+      },
     );
   }
 }

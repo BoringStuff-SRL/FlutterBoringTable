@@ -113,6 +113,13 @@ class ExampleBody extends StatelessWidget {
         color: Colors.amber,
       ),
       filterStyle: BoringFilterStyle(
+        chipThemeData: ChipThemeData(
+          selectedColor: Colors.red,
+          pressElevation: 0,
+          labelStyle: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         openFiltersDialogWidget: Icon(Icons.abc),
         titleStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
         hintStyle: TextStyle(color: Colors.amber),
@@ -176,6 +183,24 @@ class ExampleBody extends StatelessWidget {
           valueController:
               BoringFilterValueController<List<String>>(initialValue: []),
           hintText: 'Seleziona cognome',
+        ),
+        BoringChipFilter(
+          title: 'Stato',
+          showingValues: [
+            'Attivo',
+            'Non attivo',
+          ],
+          values: [
+            'active',
+            'notactive',
+          ],
+          where: (element, controller) {
+            print(controller.value);
+            return true;
+          },
+          valueController:
+              BoringFilterValueController<List<String>>(initialValue: []),
+          hintText: 'Seleziona stato',
         ),
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),

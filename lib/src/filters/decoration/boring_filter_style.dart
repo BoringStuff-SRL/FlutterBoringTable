@@ -21,6 +21,8 @@ class BoringFilterStyle {
   final Widget? closeActiveIcon;
   final Widget? checkIcon;
   final Widget? unCheckIcon;
+  final ChipThemeData? chipThemeData;
+  final double? chipSpacing;
 
   BoringFilterStyle(
       {this.textInputDecoration,
@@ -41,5 +43,7 @@ class BoringFilterStyle {
       this.searchDecoration,
       this.closeIcon,
       this.checkIcon,
-      this.unCheckIcon});
+      this.unCheckIcon,
+      this.chipThemeData,
+      this.chipSpacing});
 }

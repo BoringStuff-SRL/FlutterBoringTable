@@ -8,8 +8,6 @@ abstract class BoringFilter<T> {
   final String hintText;
   final BoringFilterValueController valueController;
   final BoringFilterType _type;
-  final List<dynamic>? values;
-  final List<String>? showingValues;
 
   BoringFilterType get type => _type;
 
@@ -19,18 +17,7 @@ abstract class BoringFilter<T> {
     required this.title,
     required this.hintText,
     required BoringFilterType type,
-    this.values,
-    this.showingValues,
-  }) : _type = type {
-    if (type == BoringFilterType.dropdown) {
-      assert(
-          values != null &&
-              values!.isNotEmpty &&
-              showingValues != null &&
-              showingValues!.length == values!.length,
-          "Please specify some values for the dropdown filter");
-    }
-  }
+  }) : _type = type;
 }
 
 class BoringTextFilter<T> extends BoringFilter<T> {
@@ -48,15 +35,24 @@ class BoringDropdownFilter<T> extends BoringFilter<T> {
     required super.valueController,
     required super.title,
     required super.hintText,
-    required super.values,
-    required super.showingValues,
+    required this.values,
+    required this.showingValues,
     this.searchMatchFn,
   }) : super(type: BoringFilterType.dropdown) {
     assert(valueController is BoringFilterValueController<List>,
         'The type of the value for the valueController must be a List');
     assert(valueController.value != null,
         "Please give an initialValue to the value controller. It can also be [] (empty list)");
+    assert(
+        values != null &&
+            values!.isNotEmpty &&
+            showingValues != null &&
+            showingValues!.length == values!.length,
+        "Please specify some values for the dropdown filter");
   }
+
+  final List<dynamic>? values;
+  final List<String>? showingValues;
 
   bool Function(DropdownMenuItem<dynamic> dropdownMenuItem, String value)?
       searchMatchFn;
@@ -68,18 +64,46 @@ class BoringDropdownMultiChoiceFilter<T> extends BoringFilter<T> {
     required super.valueController,
     required super.title,
     required super.hintText,
-    required super.values,
-    required super.showingValues,
+    required this.values,
+    required this.showingValues,
     this.searchMatchFn,
   }) : super(type: BoringFilterType.dropdownMultiChoice) {
     assert(valueController is BoringFilterValueController<List>,
         'The type of the value for the valueController must be a List');
     assert(valueController.value != null,
         "Please give an initialValue to the value controller. It can also be [] (empty list)");
+    assert(values.isNotEmpty && showingValues.length == values.length,
+        "Please specify some values for the dropdown filter");
   }
+
+  final List<dynamic> values;
+  final List<String> showingValues;
 
   bool Function(DropdownMenuItem<dynamic> dropdownMenuItem, String value)?
       searchMatchFn;
+}
+
+class BoringChipFilter<T> extends BoringFilter<T> {
+  BoringChipFilter({
+    required super.where,
+    required super.valueController,
+    required super.title,
+    required super.hintText,
+    required this.values,
+    required this.showingValues,
+    this.chipIcon,
+  }) : super(type: BoringFilterType.chips) {
+    assert(valueController is BoringFilterValueController<List>,
+        'The type of the value for the valueController must be a List');
+    assert(valueController.value != null,
+        "Please give an initialValue to the value controller. It can also be [] (empty list)");
+    assert(values.isNotEmpty && showingValues.length == values.length,
+        "Please specify some values for the dropdown filter");
+  }
+
+  final Widget? chipIcon;
+  final List<dynamic> values;
+  final List<String> showingValues;
 }
 
 class BoringFilterValueController<T> extends ValueNotifier<T?> {
@@ -91,7 +115,6 @@ class BoringFilterValueController<T> extends ValueNotifier<T?> {
   }
 
   void reset() {
-    
     if (value is List) {
       (value as List).clear();
     } else {
@@ -105,4 +128,4 @@ class BoringFilterValueController<T> extends ValueNotifier<T?> {
   }
 }
 
-enum BoringFilterType { text, dropdown, dropdownMultiChoice }
+enum BoringFilterType { text, dropdown, dropdownMultiChoice, chips }

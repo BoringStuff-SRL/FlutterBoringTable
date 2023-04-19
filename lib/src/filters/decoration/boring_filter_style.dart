@@ -47,7 +47,7 @@ class BoringFilterStyle {
       this.chipThemeData,
       this.chipSpacing});
 
-  BoringFilterStyle copyWith(
+  BoringFilterStyle copyWith({
     InputDecoration? textInputDecoration,
     InputDecoration? searchDecoration,
     BoxDecoration? dropdownBoxDecoration,
@@ -69,7 +69,7 @@ class BoringFilterStyle {
     Widget? unCheckIcon,
     ChipThemeData? chipThemeData,
     double? chipSpacing,
-  ) =>
+  }) =>
       BoringFilterStyle(
           textInputDecoration: textInputDecoration ?? this.textInputDecoration,
           dropdownBoxDecoration:

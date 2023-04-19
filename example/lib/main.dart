@@ -200,6 +200,7 @@ class ExampleBody extends StatelessWidget {
           },
           valueController:
               BoringFilterValueController<List<String>>(initialValue: []),
+        ),
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [

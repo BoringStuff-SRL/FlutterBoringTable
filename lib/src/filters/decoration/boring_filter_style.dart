@@ -46,4 +46,57 @@ class BoringFilterStyle {
       this.unCheckIcon,
       this.chipThemeData,
       this.chipSpacing});
+
+  BoringFilterStyle copyWith(
+    InputDecoration? textInputDecoration,
+    InputDecoration? searchDecoration,
+    BoxDecoration? dropdownBoxDecoration,
+    IconData? prefixIcon,
+    TextStyle? titleStyle,
+    TextStyle? hintStyle,
+    ButtonStyle? applyFiltersButtonStyle,
+    ButtonStyle? removeFiltersButtonStyle,
+    TextStyle? applyFiltersTextStyle,
+    TextStyle? removeFiltersTextStyle,
+    String? applyFiltersText,
+    String? removeFiltersText,
+    Widget? openFiltersDialogWidget,
+    Text? filterDialogTitle,
+    Alignment? filterDialogTitleAlignment,
+    Widget? closeIcon,
+    Widget? closeActiveIcon,
+    Widget? checkIcon,
+    Widget? unCheckIcon,
+    ChipThemeData? chipThemeData,
+    double? chipSpacing,
+  ) =>
+      BoringFilterStyle(
+          textInputDecoration: textInputDecoration ?? this.textInputDecoration,
+          dropdownBoxDecoration:
+              dropdownBoxDecoration ?? this.dropdownBoxDecoration,
+          hintStyle: hintStyle ?? this.hintStyle,
+          titleStyle: titleStyle ?? this.titleStyle,
+          prefixIcon: prefixIcon ?? this.prefixIcon,
+          applyFiltersButtonStyle:
+              applyFiltersButtonStyle ?? this.applyFiltersButtonStyle,
+          removeFiltersButtonStyle:
+              removeFiltersButtonStyle ?? this.removeFiltersButtonStyle,
+          applyFiltersTextStyle:
+              applyFiltersTextStyle ?? this.applyFiltersTextStyle,
+          removeFiltersTextStyle:
+              removeFiltersTextStyle ?? this.removeFiltersTextStyle,
+          applyFiltersText: applyFiltersText ?? this.applyFiltersText,
+          openFiltersDialogWidget:
+              openFiltersDialogWidget ?? this.openFiltersDialogWidget,
+          removeFiltersText: removeFiltersText ?? this.removeFiltersText,
+          filterDialogTitle: filterDialogTitle ?? this.filterDialogTitle,
+          filterDialogTitleAlignment:
+              filterDialogTitleAlignment ?? this.filterDialogTitleAlignment,
+          closeActiveIcon: closeActiveIcon ?? this.closeActiveIcon,
+          searchDecoration: searchDecoration ?? this.searchDecoration,
+          closeIcon: closeIcon ?? this.closeIcon,
+          checkIcon: checkIcon ?? this.checkIcon,
+          unCheckIcon: unCheckIcon ?? this.unCheckIcon,
+          chipThemeData: chipThemeData ?? this.chipThemeData,
+          chipSpacing: chipSpacing ?? this.chipSpacing);
 }

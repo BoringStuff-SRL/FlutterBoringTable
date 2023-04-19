@@ -39,10 +39,6 @@ class BoringDropdownFilter<T> extends BoringFilter<T> {
     required this.showingValues,
     this.searchMatchFn,
   }) : super(type: BoringFilterType.dropdown) {
-    assert(valueController is BoringFilterValueController<List>,
-        'The type of the value for the valueController must be a List');
-    assert(valueController.value != null,
-        "Please give an initialValue to the value controller. It can also be [] (empty list)");
     assert(
         values != null &&
             values!.isNotEmpty &&

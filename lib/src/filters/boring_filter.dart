@@ -91,7 +91,7 @@ class BoringFilterValueController<T> extends ValueNotifier<T?> {
   }
 
   void reset() {
-    print(value.runtimeType);
+    
     if (value is List) {
       (value as List).clear();
     } else {

@@ -200,8 +200,6 @@ class ExampleBody extends StatelessWidget {
           },
           valueController:
               BoringFilterValueController<List<String>>(initialValue: []),
-          hintText: 'Seleziona stato',
-        ),
       ],
       actionGroupTextStyle: TextStyle(color: Colors.red),
       rowActions: [

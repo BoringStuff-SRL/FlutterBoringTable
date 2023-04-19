@@ -88,11 +88,10 @@ class BoringChipFilter<T> extends BoringFilter<T> {
     required super.where,
     required super.valueController,
     required super.title,
-    required super.hintText,
     required this.values,
     required this.showingValues,
     this.chipIcon,
-  }) : super(type: BoringFilterType.chips) {
+  }) : super(type: BoringFilterType.chips, hintText: '') {
     assert(valueController is BoringFilterValueController<List>,
         'The type of the value for the valueController must be a List');
     assert(valueController.value != null,

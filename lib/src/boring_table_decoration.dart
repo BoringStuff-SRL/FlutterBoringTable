@@ -32,4 +32,38 @@ class BoringTableDecoration {
   final TextStyle? rowTextStyle;
   final bool? showDivider;
   final bool prototypeItem;
+
+  BoringTableDecoration copyWith({
+    Color? headerColor,
+    Color? rowColor,
+    Color? rowHoverColor,
+    Color? rowSplashColor,
+    Color? rowHighlightColor,
+    Color? dividerColor,
+    Color? evenRowColor,
+    Color? oddRowColor,
+    EdgeInsetsGeometry? headerPadding,
+    EdgeInsetsGeometry? rowPadding,
+    TextStyle? headerTextStyle,
+    TextStyle? rowTextStyle,
+    bool? showDivider,
+    bool? prototypeItem,
+  }) {
+    return BoringTableDecoration(
+      headerColor ?? this.headerColor,
+      rowColor ?? this.rowColor,
+      rowHoverColor ?? this.rowHoverColor,
+      rowSplashColor ?? this.rowSplashColor,
+      rowHighlightColor ?? this.rowHighlightColor,
+      dividerColor ?? this.dividerColor,
+      evenRowColor ?? this.evenRowColor,
+      oddRowColor ?? this.oddRowColor,
+      headerPadding ?? this.headerPadding,
+      rowPadding ?? this.rowPadding,
+      headerTextStyle ?? this.headerTextStyle,
+      rowTextStyle ?? this.rowTextStyle,
+      showDivider ?? this.showDivider,
+      prototypeItem ?? this.prototypeItem,
+    );
+  }
 }

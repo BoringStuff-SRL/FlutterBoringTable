@@ -84,7 +84,9 @@ class BoringFilterTableBody<T> extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: ListView.builder(
-        prototypeItem: rowCount > 0 ? itemAtPosition(context, 0) : null,
+        prototypeItem: decoration?.prototypeItem ?? true
+            ? (rowCount > 0 ? itemAtPosition(context, 0) : null)
+            : null,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
@@ -97,9 +99,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                     children: rowActions
                         .map((e) => SlidableAction(
                             foregroundColor: Colors.white,
-                            onPressed: (c) =>
-                              e.onTap.call(rawItems[index])
-                            ,
+                            onPressed: (c) => e.onTap.call(rawItems[index]),
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             label: e.buttonText,

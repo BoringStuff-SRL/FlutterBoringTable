@@ -15,7 +15,8 @@ class BoringTableDecoration {
       this.rowTextStyle,
       this.evenRowColor,
       this.oddRowColor,
-      this.showDivider});
+      this.showDivider,
+      this.prototypeItem = true});
 
   final Color? headerColor;
   final Color? rowColor;
@@ -30,36 +31,5 @@ class BoringTableDecoration {
   final TextStyle? headerTextStyle;
   final TextStyle? rowTextStyle;
   final bool? showDivider;
-
-  BoringTableDecoration copyWith({
-    Color? headerColor,
-    Color? rowColor,
-    Color? rowHoverColor,
-    Color? rowSplashColor,
-    Color? rowHighlightColor,
-    Color? dividerColor,
-    Color? evenRowColor,
-    Color? oddRowColor,
-    EdgeInsetsGeometry? headerPadding,
-    EdgeInsetsGeometry? rowPadding,
-    TextStyle? headerTextStyle,
-    TextStyle? rowTextStyle,
-    bool? showDivider,
-  }) {
-    return BoringTableDecoration(
-      headerColor: headerColor ?? this.headerColor,
-      rowColor: rowColor ?? this.rowColor,
-      rowHoverColor: rowHoverColor ?? this.rowHoverColor,
-      rowSplashColor: rowSplashColor ?? this.rowSplashColor,
-      rowHighlightColor: rowHighlightColor ?? this.rowHighlightColor,
-      dividerColor: dividerColor ?? this.dividerColor,
-      evenRowColor: evenRowColor ?? this.evenRowColor,
-      oddRowColor: oddRowColor ?? this.oddRowColor,
-      headerPadding: headerPadding ?? this.headerPadding,
-      rowPadding: rowPadding ?? this.rowPadding,
-      headerTextStyle: headerTextStyle ?? this.headerTextStyle,
-      rowTextStyle: rowTextStyle ?? this.rowTextStyle,
-      showDivider: showDivider ?? this.showDivider,
-    );
-  }
+  final bool prototypeItem;
 }

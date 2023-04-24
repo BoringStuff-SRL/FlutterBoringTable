@@ -33,37 +33,35 @@ class BoringTableDecoration {
   final bool? showDivider;
   final bool prototypeItem;
 
-  BoringTableDecoration copyWith({
-    Color? headerColor,
-    Color? rowColor,
-    Color? rowHoverColor,
-    Color? rowSplashColor,
-    Color? rowHighlightColor,
-    Color? dividerColor,
-    Color? evenRowColor,
-    Color? oddRowColor,
-    EdgeInsetsGeometry? headerPadding,
-    EdgeInsetsGeometry? rowPadding,
-    TextStyle? headerTextStyle,
-    TextStyle? rowTextStyle,
-    bool? showDivider,
-    bool? prototypeItem,
-  }) {
+  BoringTableDecoration copyWith(
+      {Color? headerColor,
+      Color? rowColor,
+      Color? rowHoverColor,
+      Color? rowSplashColor,
+      Color? rowHighlightColor,
+      Color? dividerColor,
+      Color? evenRowColor,
+      Color? oddRowColor,
+      EdgeInsetsGeometry? headerPadding,
+      EdgeInsetsGeometry? rowPadding,
+      TextStyle? headerTextStyle,
+      TextStyle? rowTextStyle,
+      bool? showDivider,
+      bool? prototypeItem}) {
     return BoringTableDecoration(
-      headerColor ?? this.headerColor,
-      rowColor ?? this.rowColor,
-      rowHoverColor ?? this.rowHoverColor,
-      rowSplashColor ?? this.rowSplashColor,
-      rowHighlightColor ?? this.rowHighlightColor,
-      dividerColor ?? this.dividerColor,
-      evenRowColor ?? this.evenRowColor,
-      oddRowColor ?? this.oddRowColor,
-      headerPadding ?? this.headerPadding,
-      rowPadding ?? this.rowPadding,
-      headerTextStyle ?? this.headerTextStyle,
-      rowTextStyle ?? this.rowTextStyle,
-      showDivider ?? this.showDivider,
-      prototypeItem ?? this.prototypeItem,
-    );
+        headerColor: headerColor ?? this.headerColor,
+        rowColor: rowColor ?? this.rowColor,
+        rowHoverColor: rowHoverColor ?? this.rowHoverColor,
+        rowSplashColor: rowSplashColor ?? this.rowSplashColor,
+        rowHighlightColor: rowHighlightColor ?? this.rowHighlightColor,
+        dividerColor: dividerColor ?? this.dividerColor,
+        evenRowColor: evenRowColor ?? this.evenRowColor,
+        oddRowColor: oddRowColor ?? this.oddRowColor,
+        headerPadding: headerPadding ?? this.headerPadding,
+        rowPadding: rowPadding ?? this.rowPadding,
+        headerTextStyle: headerTextStyle ?? this.headerTextStyle,
+        rowTextStyle: rowTextStyle ?? this.rowTextStyle,
+        showDivider: showDivider ?? this.showDivider,
+        prototypeItem: prototypeItem ?? this.prototypeItem);
   }
 }

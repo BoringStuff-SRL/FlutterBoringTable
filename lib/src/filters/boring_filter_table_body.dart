@@ -32,7 +32,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
   final bool groupActions;
   final TextStyle? actionGroupTextStyle;
   final Widget groupActionsWidget;
-  final ShapeBorder? groupActionsMenuShape;
+  final double? groupActionsMenuShape;
 
   List<Widget> buildRow(BuildContext context, int index) {
     return rowBuilder(context, index)
@@ -90,21 +90,28 @@ class BoringFilterTableBody<T> extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
+          int count = -1;
+
           return Slidable(
             key: ValueKey(index),
             startActionPane: rowActions.isNotEmpty
                 ? ActionPane(
                     extentRatio: 0.35,
                     motion: const ScrollMotion(),
-                    children: rowActions
-                        .map((e) => SlidableAction(
-                            foregroundColor: Colors.white,
-                            onPressed: (c) => e.onTap.call(rawItems[index]),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            label: e.buttonText,
-                            icon: e.icon?.icon))
-                        .toList())
+                    children: rowActions.map((e) {
+                      count++;
+                      return SlidableAction(
+                          foregroundColor: Colors.white,
+                          onPressed: (c) => e.onTap.call(rawItems[index]),
+                          backgroundColor: count % 2 == 0
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withAlpha(200)
+                              : Theme.of(context).colorScheme.primary,
+                          label: e.buttonText,
+                          icon: e.icon?.icon);
+                    }).toList())
                 : null,
             child: Container(
                 color: index.isEven
@@ -122,7 +129,9 @@ class BoringFilterTableBody<T> extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: PopupMenuButton(
         splashRadius: 20,
-        shape: groupActionsMenuShape,
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.all(Radius.circular(groupActionsMenuShape ?? 15))),
         padding: EdgeInsets.zero,
         icon: groupActionsWidget,
         itemBuilder: (context) {

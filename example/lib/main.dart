@@ -88,7 +88,7 @@ class ExampleBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BoringFilterTable<Person>(
-      onTap: ((p0) => print("Tapped $p0")),
+
       headerRow: RowElementClass.tableHeader,
       filterColumnStyle: BoringFilterColumnStyle(),
       rowActionsColumnLabel: "More",
@@ -106,8 +106,7 @@ class ExampleBody extends StatelessWidget {
           evenRowColor: Colors.purple,
           oddRowColor: Colors.pink),
       groupActions: true,
-      groupActionsMenuShape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      groupActionsMenuShape: 10,
       groupActionsWidget: const Icon(
         Icons.more_vert,
         color: Colors.amber,

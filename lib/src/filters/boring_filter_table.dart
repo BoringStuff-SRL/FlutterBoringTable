@@ -54,7 +54,7 @@ class BoringFilterTable<T> extends StatefulWidget {
   final bool groupActions;
   final TextStyle? actionGroupTextStyle;
   final Widget groupActionsWidget;
-  final ShapeBorder? groupActionsMenuShape;
+  final double? groupActionsMenuShape;
   final List<BoringFilter<T>>? filters;
   final List<T>? rawItems;
   final BoringFilterStyle filterStyle;
@@ -210,7 +210,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                           child: BoringFilterTableBody<T>(
                             groupActionsWidget: widget.groupActionsWidget,
                             decoration: widget.decoration,
-                            onTap: (widget.onTap as void Function(T)),
+                            onTap: widget.onTap,
                             maxWidth: maxWidth,
                             rawItems: filteredItems,
                             rowBuilder: _rowBuilder,

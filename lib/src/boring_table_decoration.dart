@@ -16,6 +16,8 @@ class BoringTableDecoration {
       this.evenRowColor,
       this.oddRowColor,
       this.showDivider,
+      this.showColumnFilter = true,
+      this.showSearchFiler = true,
       this.prototypeItem = true});
 
   final Color? headerColor;
@@ -32,6 +34,8 @@ class BoringTableDecoration {
   final TextStyle? rowTextStyle;
   final bool? showDivider;
   final bool prototypeItem;
+  final bool? showSearchFiler;
+  final bool showColumnFilter;
 
   BoringTableDecoration copyWith(
       {Color? headerColor,
@@ -47,6 +51,8 @@ class BoringTableDecoration {
       TextStyle? headerTextStyle,
       TextStyle? rowTextStyle,
       bool? showDivider,
+      bool? showSearchFiler,
+      bool? showColumnFilter,
       bool? prototypeItem}) {
     return BoringTableDecoration(
         headerColor: headerColor ?? this.headerColor,
@@ -62,6 +68,8 @@ class BoringTableDecoration {
         headerTextStyle: headerTextStyle ?? this.headerTextStyle,
         rowTextStyle: rowTextStyle ?? this.rowTextStyle,
         showDivider: showDivider ?? this.showDivider,
+        showColumnFilter: showColumnFilter ?? this.showColumnFilter,
+        showSearchFiler: showSearchFiler ?? this.showSearchFiler,
         prototypeItem: prototypeItem ?? this.prototypeItem);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/close_button.dart';
 import '../decoration/boring_filter_style.dart';
 
 class BoringFilterDialog extends StatelessWidget {
@@ -48,7 +49,8 @@ class BoringFilterDialog extends StatelessWidget {
         width: 700,
         child: Wrap(
           runAlignment: WrapAlignment.center,
-          spacing: 15,
+          spacing: 20,
+          runSpacing: 20,
           children: [
             ...getWidgets(),
           ],
@@ -88,24 +90,26 @@ class BoringFilterDialog extends StatelessWidget {
             ),
           ),
           MouseRegion(
-              onEnter: (event) {
-                _isHovered.value = true;
+            onEnter: (event) {
+              _isHovered.value = true;
+            },
+            onExit: (event) {
+              _isHovered.value = false;
+            },
+            child: UniBouncingButton(
+              onPressed: () {
+                Navigator.pop(context);
               },
-              onExit: (event) {
-                _isHovered.value = false;
-              },
-              child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: ValueListenableBuilder(
-                    valueListenable: _isHovered,
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      if (value) {
-                        return style?.closeActiveIcon ??
-                            const Icon(Icons.clear);
-                      }
-                      return style?.closeIcon ?? const Icon(Icons.clear);
-                    },
-                  )))
+              child: ValueListenableBuilder(
+                valueListenable: _isHovered,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return value
+                      ? style?.closeActiveIcon ?? const Icon(Icons.clear)
+                      : style?.closeIcon ?? const Icon(Icons.clear);
+                },
+              ),
+            ),
+          )
         ],
       );
 

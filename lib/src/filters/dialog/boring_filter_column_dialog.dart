@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/models.dart';
+import '../../../utils/close_button.dart';
 import '../decoration/boring_filter_column_style.dart';
 
 class BoringFilterColumnDialog extends StatelessWidget {
@@ -75,24 +76,26 @@ class BoringFilterColumnDialog extends StatelessWidget {
             child: style?.title ?? const Text('Title'),
           ),
           MouseRegion(
-              onEnter: (event) {
-                _isHovered.value = true;
+            onEnter: (event) {
+              _isHovered.value = true;
+            },
+            onExit: (event) {
+              _isHovered.value = false;
+            },
+            child: UniBouncingButton(
+              onPressed: () {
+                Navigator.pop(context);
               },
-              onExit: (event) {
-                _isHovered.value = false;
-              },
-              child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: ValueListenableBuilder(
-                    valueListenable: _isHovered,
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      if (value) {
-                        return style?.closeActiveIcon ??
-                            const Icon(Icons.clear);
-                      }
-                      return style?.closeIcon ?? const Icon(Icons.clear);
-                    },
-                  )))
+              child: ValueListenableBuilder(
+                valueListenable: _isHovered,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return value
+                      ? style?.closeActiveIcon ?? const Icon(Icons.clear)
+                      : style?.closeIcon ?? const Icon(Icons.clear);
+                },
+              ),
+            ),
+          )
         ],
       );
 

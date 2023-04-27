@@ -8,6 +8,7 @@ import 'package:boring_table/src/filters/dialog/boring_filter_column_dialog.dart
 import 'package:boring_table/src/filters/dialog/boring_filter_dialog.dart';
 import 'package:boring_table/src/filters/boring_filter_table_body.dart';
 import 'package:boring_table/src/filters/boring_filter_table_header.dart';
+import 'package:boring_table/utils/close_button.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
@@ -142,38 +143,38 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         child: Column(
           children: [
             widget.title != null
-                ? widget.filters != null
+                ? widget.filters != null &&
+                        (widget.decoration?.showColumnFilter ?? true)
                     ? Row(
                         children: [
                           const SizedBox(
                             width: 20,
                           ),
-                          MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    BoringFilterColumnDialog.showColumnDialog(
-                                      context,
-                                      headerRow: _buildHeaderList.value,
-                                      setBuilder: () {
-                                        setState(() {
-                                          setBuilder();
-                                        });
-                                      },
-                                      style: widget.filterColumnStyle,
-                                    );
+                          UniBouncingButton(
+                              onPressed: () {
+                                BoringFilterColumnDialog.showColumnDialog(
+                                  context,
+                                  headerRow: _buildHeaderList.value,
+                                  setBuilder: () {
+                                    setState(() {
+                                      setBuilder();
+                                    });
                                   },
-                                  child: widget.filterColumnStyle.filterIcon ??
-                                      const Icon(Icons.filter_alt_sharp))),
+                                  style: widget.filterColumnStyle,
+                                );
+                              },
+                              child: widget.filterColumnStyle.filterIcon ??
+                                  const Icon(Icons.filter_alt_sharp)),
                           Expanded(
                             child: widget.title!,
                           ),
                           if (widget.filters != null &&
-                              widget.filters!.isNotEmpty)
+                              widget.filters!.isNotEmpty &&
+                              (widget.decoration?.showColumnFilter ?? true))
                             MouseRegion(
                               cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () {
+                              child: UniBouncingButton(
+                                onPressed: () {
                                   BoringFilterDialog.showFiltersDialog(
                                     context,
                                     filters: widget.filters!,

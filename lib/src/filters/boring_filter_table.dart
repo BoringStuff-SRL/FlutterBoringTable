@@ -143,53 +143,50 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         child: Column(
           children: [
             widget.title != null
-                ? widget.filters != null &&
-                        (widget.decoration?.showColumnFilter ?? true)
+                ? widget.filters != null
                     ? Row(
                         children: [
                           const SizedBox(
                             width: 20,
                           ),
-                          UniBouncingButton(
-                              onPressed: () {
-                                BoringFilterColumnDialog.showColumnDialog(
-                                  context,
-                                  headerRow: _buildHeaderList.value,
-                                  setBuilder: () {
-                                    setState(() {
-                                      setBuilder();
-                                    });
-                                  },
-                                  style: widget.filterColumnStyle,
-                                );
-                              },
-                              child: widget.filterColumnStyle.filterIcon ??
-                                  const Icon(Icons.filter_alt_sharp)),
+                          if ((widget.decoration?.showColumnFilter ?? true))
+                            UniBouncingButton(
+                                onPressed: () {
+                                  BoringFilterColumnDialog.showColumnDialog(
+                                    context,
+                                    headerRow: _buildHeaderList.value,
+                                    setBuilder: () {
+                                      setState(() {
+                                        setBuilder();
+                                      });
+                                    },
+                                    style: widget.filterColumnStyle,
+                                  );
+                                },
+                                child: widget.filterColumnStyle.filterIcon ??
+                                    const Icon(Icons.filter_alt_sharp)),
                           Expanded(
                             child: widget.title!,
                           ),
                           if (widget.filters != null &&
                               widget.filters!.isNotEmpty &&
                               (widget.decoration?.showSearchFiler ?? true))
-                            MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: UniBouncingButton(
-                                onPressed: () {
-                                  BoringFilterDialog.showFiltersDialog(
-                                    context,
-                                    filters: widget.filters!,
-                                    setBuilder: () {
-                                      setState(() {
-                                        setBuilder();
-                                      });
-                                    },
-                                    style: widget.filterStyle,
-                                  );
-                                },
-                                child: widget
-                                        .filterStyle.openFiltersDialogWidget ??
-                                    const Icon(Icons.filter_alt_sharp),
-                              ),
+                            UniBouncingButton(
+                              onPressed: () {
+                                BoringFilterDialog.showFiltersDialog(
+                                  context,
+                                  filters: widget.filters!,
+                                  setBuilder: () {
+                                    setState(() {
+                                      setBuilder();
+                                    });
+                                  },
+                                  style: widget.filterStyle,
+                                );
+                              },
+                              child:
+                                  widget.filterStyle.openFiltersDialogWidget ??
+                                      const Icon(Icons.filter_alt_sharp),
                             ),
                           const SizedBox(
                             width: 20,

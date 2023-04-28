@@ -125,7 +125,7 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
               child: GestureDetector(
                 onTap: () {
                   isSelected.value = !value;
-                  key.onPressed!.call();
+                  key.onPressed!.call(isSelected.value);
                 },
                 child: Row(
                   children: [
@@ -159,7 +159,9 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
               ? SystemMouseCursors.click
               : SystemMouseCursors.none,
           child: GestureDetector(
-            onTap: key.onPressed,
+            onTap: () {
+              key.onPressed?.call(false);
+            },
             child: Row(
               children: [
                 if (key.icon != null)

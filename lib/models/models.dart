@@ -11,7 +11,7 @@ class TableHeaderElement {
   final int flex;
   final TextAlign alignment;
   final bool isSelectAll;
-  final Future<void> Function()? onPressed;
+  final Future<void> Function(bool? value)? onPressed;
 
   TableHeaderElement({
     required this.label,

@@ -80,21 +80,42 @@ class ExampleBody extends StatelessWidget {
     return Colors.red; // default color
   }
 
+  List<int> a = [1, 2, 3, 4, 5];
+
   static final List<Person> userList = List.generate(
-    1,
-    (index) => Person(name: 'enzo', surname: 'valente'),
+    5,
+    (index) => Person(name: '$index', surname: 'valente'),
   );
+
+  final ValueNotifier<bool> _isSelected = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return BoringFilterTable<Person>(
-
-      headerRow: RowElementClass.tableHeader,
+      headerRow: RowElementClass(isSelected: _isSelected).tableHeader(),
       filterColumnStyle: BoringFilterColumnStyle(),
       rowActionsColumnLabel: "More",
       toTableRow: (dynamic user) {
         return [
-          Text(user.name),
+          ValueListenableBuilder(
+            valueListenable: _isSelected,
+            builder: (BuildContext context, bool value, Widget? child) {
+              print('build');
+              if (value) {
+                return Row(children: [
+                  Icon(Icons.check_box),
+                  SizedBox(width: 10),
+                  Text(user.name)
+                ]);
+              } else {
+                return Row(children: [
+                  Icon(Icons.check_box_outline_blank),
+                  SizedBox(width: 10),
+                  Text(user.name)
+                ]);
+              }
+            },
+          ),
           Text(user.name),
           Text(user.name),
           Text(user.surname),
@@ -233,12 +254,24 @@ class ExampleBody extends StatelessWidget {
 }
 
 class RowElementClass {
-  RowElementClass();
+  final ValueNotifier<bool>? isSelected;
 
-  static final tableHeader = [
-    TableHeaderElement(label: "Column A"),
-    TableHeaderElement(label: "Column B"),
-    TableHeaderElement(label: "Column C"),
-    TableHeaderElement(label: "Column D"),
-  ];
+  RowElementClass({this.isSelected});
+
+  List<TableHeaderElement> tableHeader() {
+    return [
+      TableHeaderElement.selectedAll(
+          label: "Column A",
+          icon: const Icon(Icons.check_box),
+          secondaryIcon: const Icon(Icons.check_box_outline_blank),
+          onPressed: (value) async {
+            if (isSelected != null) {
+              isSelected!.value = !isSelected!.value;
+            }
+          }),
+      TableHeaderElement(label: "Column B"),
+      TableHeaderElement(label: "Column C"),
+      TableHeaderElement(label: "Column D"),
+    ];
+  }
 }

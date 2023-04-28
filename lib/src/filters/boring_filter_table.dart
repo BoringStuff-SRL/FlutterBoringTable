@@ -170,7 +170,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                           ),
                           if (widget.filters != null &&
                               widget.filters!.isNotEmpty &&
-                              (widget.decoration?.showColumnFilter ?? true))
+                              (widget.decoration?.showSearchFiler ?? true))
                             MouseRegion(
                               cursor: SystemMouseCursors.click,
                               child: UniBouncingButton(

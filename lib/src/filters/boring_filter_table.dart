@@ -146,6 +146,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                 ? widget.filters != null
                     ? Row(
                         children: [
+                          if ((widget.decoration?.showColumnFilter ?? true))
                           const SizedBox(
                             width: 20,
                           ),

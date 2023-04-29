@@ -10,7 +10,8 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
       this.rowActions,
       required this.groupActions,
       required this.rowActionsColumnLabel,
-      required this.rawItems});
+      required this.rawItems,
+      required this.isSelected});
 
   final Map<TableHeaderElement, bool> rowHeader;
   final List<BoringFilterRowAction>? rowActions;
@@ -18,6 +19,7 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
   final BoringTableDecoration? decoration;
   final bool groupActions;
   final List<T> rawItems;
+  final ValueNotifier<bool> isSelected;
 
   @override
   State<BoringFilterTableHeader> createState() =>
@@ -25,6 +27,9 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
 }
 
 class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
+  final GlobalKey _headerActionsKey = GlobalKey();
+  bool built = false;
+
   Widget additionalActionsRow(BuildContext context, int index) =>
       widget.rowActions != null
           ? Row(
@@ -38,9 +43,6 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
             )
           : Container();
 
-  final GlobalKey _headerActionsKey = GlobalKey();
-  bool built = false;
-
   @override
   void initState() {
     super.initState();
@@ -48,21 +50,19 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
   }
 
   void afterBuild() {
-    //print("HERE");
     if (built) return;
-    setState(() {
-      built = true;
-    });
+    if (mounted) {
+      setState(() {
+        built = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     final textTheme = Theme.of(context).textTheme;
 
-    return
-        // Second header row
-        ColoredBox(
+    return ColoredBox(
       color: widget.decoration?.headerColor ?? Theme.of(context).primaryColor,
       child: Padding(
         padding: widget.decoration?.headerPadding ??
@@ -114,9 +114,8 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
   }
 
   Widget _selectAllWidget(TableHeaderElement key, TextTheme textTheme) {
-    ValueNotifier<bool> isSelected = ValueNotifier(false);
     return ValueListenableBuilder(
-      valueListenable: isSelected,
+      valueListenable: widget.isSelected,
       builder: (BuildContext context, bool value, Widget? child) {
         return Expanded(
             flex: key.flex,
@@ -124,8 +123,8 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                 onTap: () {
-                  isSelected.value = !value;
-                  key.onPressed!.call(isSelected.value);
+                  widget.isSelected.value = !value;
+                  key.onPressed!.call(widget.isSelected.value);
                 },
                 child: Row(
                   children: [

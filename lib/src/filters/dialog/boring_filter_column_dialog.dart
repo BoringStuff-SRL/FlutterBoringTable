@@ -101,6 +101,9 @@ class BoringFilterColumnDialog extends StatelessWidget {
 
   List<Widget> _generateRow() {
     final List<Widget> list = [];
+
+    _tempMap.removeWhere((key, value) => !key.showOnColumFilter);
+
     _tempMap.forEach((key, value) {
       list.add(MouseRegion(
         child: GestureDetector(

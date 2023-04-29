@@ -223,9 +223,7 @@ class BoringFilterDialog extends StatelessWidget {
               ),
             ),
             searchMatchFn: (item, searchValue) =>
-                (filter as BoringDropdownFilter)
-                    .searchMatchFn
-                    ?.call(item, searchValue) ??
+                (filter).searchMatchFn?.call(item, searchValue) ??
                 _searchDefaultMatchFn(item, searchValue),
             onMenuStateChange: (isOpen) =>
                 _onMenuStateChange(isOpen, searchController),

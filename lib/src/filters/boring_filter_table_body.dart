@@ -82,46 +82,44 @@ class BoringFilterTableBody<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      child: ListView.builder(
-        prototypeItem: decoration?.prototypeItem ?? true
-            ? (rowCount > 0 ? itemAtPosition(context, 0) : null)
-            : null,
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: rowCount,
-        itemBuilder: ((context, index) {
-          int count = -1;
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: ListView.builder(
+          prototypeItem: decoration?.prototypeItem ?? true
+              ? (rowCount > 0 ? itemAtPosition(context, 0) : null)
+              : null,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: rowCount,
+          itemBuilder: ((context, index) {
+            int count = -1;
 
-          return Slidable(
-            key: ValueKey(index),
-            startActionPane: rowActions.isNotEmpty
-                ? ActionPane(
-                    extentRatio: 0.35,
-                    motion: const ScrollMotion(),
-                    children: rowActions.map((e) {
-                      count++;
-                      return SlidableAction(
-                          foregroundColor: Colors.white,
-                          onPressed: (c) => e.onTap.call(rawItems[index]),
-                          backgroundColor: count % 2 == 0
-                              ? Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withAlpha(200)
-                              : Theme.of(context).colorScheme.primary,
-                          label: e.buttonText,
-                          icon: e.icon?.icon);
-                    }).toList())
-                : null,
-            child: Container(
-                color: index.isEven
-                    ? decoration?.evenRowColor
-                    : decoration?.oddRowColor,
-                child: (itemAtPosition(context, index))),
-          );
-        }),
-      ),
-    );
+            return Slidable(
+              key: ValueKey(index),
+              startActionPane: rowActions.isNotEmpty
+                  ? ActionPane(
+                      motion: const ScrollMotion(),
+                      children: rowActions.map((e) {
+                        count++;
+                        return SlidableAction(
+                            foregroundColor: Colors.white,
+                            onPressed: (c) => e.onTap.call(rawItems[index]),
+                            backgroundColor: count % 2 == 0
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withAlpha(200)
+                                : Theme.of(context).colorScheme.primary,
+                            label: e.buttonText,
+                            icon: e.icon?.icon);
+                      }).toList())
+                  : null,
+              child: Container(
+                  color: index.isEven
+                      ? decoration?.evenRowColor
+                      : decoration?.oddRowColor,
+                  child: (itemAtPosition(context, index))),
+            );
+          }),
+        ));
   }
 
   Widget _buildActionsGroup(BuildContext context, int index) {

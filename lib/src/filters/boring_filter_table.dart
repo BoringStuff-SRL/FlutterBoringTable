@@ -72,11 +72,11 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
   late ScrollController _first;
   late ScrollController _second;
 
-  late int _rowCount = 0;
+  final ValueNotifier<int> _rowCount = ValueNotifier(0);
+  final ValueNotifier<bool> _isSelected = ValueNotifier(false);
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
-  final ValueNotifier<Map<TableHeaderElement, bool>> _buildHeaderList =
-      ValueNotifier({});
+  final Map<TableHeaderElement, bool> _buildHeaderList = {};
 
   double get minWidth => widget.minWidth ?? widget.headerRow.length * 200.0;
 
@@ -88,9 +88,8 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     _second = _controllers.addAndGet();
 
     for (var e in widget.headerRow) {
-      _buildHeaderList.value.addEntries({e: true}.entries);
+      _buildHeaderList.addEntries({e: true}.entries);
     }
-
     setBuilder();
   }
 
@@ -101,7 +100,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     super.dispose();
   }
 
-  void setBuilder() {
+  void setBuilder({bool buildHeader = false, int? a}) {
     filteredItems = [];
     for (T item in widget.rawItems!) {
       bool isAcceptable = true;
@@ -115,121 +114,73 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         filteredItems.add(item);
       }
     }
-    _rowCount = (filteredItems.length);
 
-    _rowBuilder = (context, index) => widget.toTableRow!(filteredItems[index]);
-  }
-
-  @override
-  void didUpdateWidget(covariant BoringFilterTable<T> oldWidget) {
-    setBuilder();
-    super.didUpdateWidget(oldWidget);
+    if (_rowCount.value != filteredItems.length) {
+      _rowCount.value = filteredItems.length;
+      _rowBuilder =
+          (context, index) => widget.toTableRow!(filteredItems[index]);
+    } else if (buildHeader) {
+      _rowCount.notifyListeners();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final maxWidth = max(
-        constraints.maxWidth,
-        minWidth,
-      );
-      return Card(
-        elevation: widget.cardElevation ?? 38,
-        margin: EdgeInsets.zero,
-        clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
-        ),
-        child: Column(
-          children: [
-            widget.title != null
-                ? widget.filters != null
-                    ? Row(
-                        children: [
-                          if ((widget.decoration?.showColumnFilter ?? true))
-                          const SizedBox(
-                            width: 20,
+    return Card(
+      elevation: widget.cardElevation ?? 38,
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double maxWidth = max(constraints.maxWidth, minWidth);
+          return ValueListenableBuilder(
+            valueListenable: _rowCount,
+            builder: (BuildContext context, int value, Widget? child) {
+              return Column(
+                children: [
+                  _tableTitle(),
+                  _header(maxWidth),
+                  Expanded(
+                    child: (value == 0 && widget.widgetWhenEmpty != null)
+                        ? Center(child: widget.widgetWhenEmpty!)
+                        : Scrollbar(
+                            scrollbarOrientation: ScrollbarOrientation.bottom,
+                            controller: _second,
+                            child: SingleChildScrollView(
+                                controller: _second,
+                                scrollDirection: Axis.horizontal,
+                                child: BoringFilterTableBody<T>(
+                                  groupActionsWidget: widget.groupActionsWidget,
+                                  decoration: widget.decoration,
+                                  onTap: widget.onTap,
+                                  maxWidth: maxWidth,
+                                  rawItems: filteredItems,
+                                  rowBuilder: _rowBuilder,
+                                  headerRow: _buildHeaderList,
+                                  groupActionsMenuShape:
+                                      widget.groupActionsMenuShape,
+                                  rowCount: value,
+                                  groupActions: widget.groupActions,
+                                  actionGroupTextStyle:
+                                      widget.actionGroupTextStyle,
+                                  rowActions: widget.rowActions,
+                                )),
                           ),
-                          if ((widget.decoration?.showColumnFilter ?? true))
-                            UniBouncingButton(
-                                onPressed: () {
-                                  BoringFilterColumnDialog.showColumnDialog(
-                                    context,
-                                    headerRow: _buildHeaderList.value,
-                                    setBuilder: () {
-                                      setState(() {
-                                        setBuilder();
-                                      });
-                                    },
-                                    style: widget.filterColumnStyle,
-                                  );
-                                },
-                                child: widget.filterColumnStyle.filterIcon ??
-                                    const Icon(Icons.filter_alt_sharp)),
-                          Expanded(
-                            child: widget.title!,
-                          ),
-                          if (widget.filters != null &&
-                              widget.filters!.isNotEmpty &&
-                              (widget.decoration?.showSearchFiler ?? true))
-                            UniBouncingButton(
-                              onPressed: () {
-                                BoringFilterDialog.showFiltersDialog(
-                                  context,
-                                  filters: widget.filters!,
-                                  setBuilder: () {
-                                    setState(() {
-                                      setBuilder();
-                                    });
-                                  },
-                                  style: widget.filterStyle,
-                                );
-                              },
-                              child:
-                                  widget.filterStyle.openFiltersDialogWidget ??
-                                      const Icon(Icons.filter_alt_sharp),
-                            ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      )
-                    : widget.title!
-                : Container(),
-            header(maxWidth),
-            Expanded(
-              child: (_rowCount == 0 && widget.widgetWhenEmpty != null)
-                  ? Center(child: widget.widgetWhenEmpty!)
-                  : Scrollbar(
-                      scrollbarOrientation: ScrollbarOrientation.bottom,
-                      controller: _second,
-                      child: SingleChildScrollView(
-                          controller: _second,
-                          scrollDirection: Axis.horizontal,
-                          child: BoringFilterTableBody<T>(
-                            groupActionsWidget: widget.groupActionsWidget,
-                            decoration: widget.decoration,
-                            onTap: widget.onTap,
-                            maxWidth: maxWidth,
-                            rawItems: filteredItems,
-                            rowBuilder: _rowBuilder,
-                            headerRow: _buildHeaderList.value,
-                            groupActionsMenuShape: widget.groupActionsMenuShape,
-                            rowCount: _rowCount,
-                            groupActions: widget.groupActions,
-                            actionGroupTextStyle: widget.actionGroupTextStyle,
-                            rowActions: widget.rowActions,
-                          )),
-                    ),
-            ),
-            footer()
-          ],
-        ),
-      );
-    });
+                  ),
+                  _footer()
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 
-  Widget header(double maxWidth) {
+  Widget _header(double maxWidth) {
     return SingleChildScrollView(
       controller: _first,
       scrollDirection: Axis.horizontal,
@@ -237,7 +188,8 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: BoringFilterTableHeader(
           decoration: widget.decoration,
-          rowHeader: _buildHeaderList.value,
+          isSelected: _isSelected,
+          rowHeader: _buildHeaderList,
           rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
           groupActions: widget.groupActions,
           rowActions: widget.rowActions,
@@ -247,7 +199,53 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     );
   }
 
-  Widget footer() => Column(
+  Widget _tableTitle() {
+    return widget.title != null
+        ? Row(
+            children: [
+              if ((widget.decoration?.showColumnFilter ?? true))
+                Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: _filterColumnWidget()),
+              Expanded(child: widget.title!),
+              if (widget.filters != null &&
+                  widget.filters!.isNotEmpty &&
+                  (widget.decoration?.showSearchFiler ?? true))
+                _filterRowWidget(),
+              const SizedBox(
+                width: 20,
+              ),
+            ],
+          )
+        : Container();
+  }
+
+  Widget _filterColumnWidget() {
+    return UniBouncingButton(
+        onPressed: () {
+          BoringFilterColumnDialog.showColumnDialog(context,
+              headerRow: _buildHeaderList,
+              setBuilder: () => setBuilder(buildHeader: true),
+              style: widget.filterColumnStyle);
+        },
+        child: widget.filterColumnStyle.filterIcon ??
+            const Icon(Icons.filter_alt_sharp));
+  }
+
+  Widget _filterRowWidget() {
+    return UniBouncingButton(
+      onPressed: () {
+        BoringFilterDialog.showFiltersDialog(context,
+            filters: widget.filters!,
+            setBuilder: () => setBuilder(),
+            style: widget.filterStyle);
+      },
+      child: widget.filterStyle.openFiltersDialogWidget ??
+          const Icon(Icons.filter_alt_sharp),
+    );
+  }
+
+  Widget _footer() => Column(
         children: [
           Container(
               color: widget.decoration?.dividerColor ??

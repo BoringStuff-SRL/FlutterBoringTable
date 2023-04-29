@@ -4,7 +4,7 @@ abstract class BoringTableRowElement {
   List<Widget> toTableRow();
 }
 
-class TableHeaderElement {
+class TableHeaderElement<T> {
   final String label;
   final Widget? icon;
   final Widget? secondaryIcon;
@@ -13,6 +13,7 @@ class TableHeaderElement {
   final bool isSelectAll;
   final Future<void> Function(bool? value)? onPressed;
   final bool showOnColumFilter;
+  final Future<List<T>> Function(bool? value)? orderBy;
 
   TableHeaderElement({
     required this.label,
@@ -23,6 +24,7 @@ class TableHeaderElement {
     this.flex = 1,
     this.onPressed,
     this.alignment = TextAlign.start,
+    this.orderBy,
   });
 
   TableHeaderElement.selectedAll({
@@ -33,6 +35,7 @@ class TableHeaderElement {
     this.showOnColumFilter = true,
     this.isSelectAll = true,
     this.flex = 1,
+    this.orderBy,
     this.alignment = TextAlign.start,
   });
 }

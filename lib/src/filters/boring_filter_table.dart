@@ -4,17 +4,16 @@ import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_table_decoration.dart';
 import 'package:boring_table/src/boring_table_title.dart';
 import 'package:boring_table/src/filters/boring_filter.dart';
-import 'package:boring_table/src/filters/dialog/boring_filter_column_dialog.dart';
-import 'package:boring_table/src/filters/dialog/boring_filter_dialog.dart';
 import 'package:boring_table/src/filters/boring_filter_table_body.dart';
 import 'package:boring_table/src/filters/boring_filter_table_header.dart';
+import 'package:boring_table/src/filters/dialog/boring_filter_column_dialog.dart';
+import 'package:boring_table/src/filters/dialog/boring_filter_dialog.dart';
 import 'package:boring_table/utils/close_button.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
-import 'decoration/boring_filter_column_style.dart';
 import 'boring_filter_row_action.dart';
-
+import 'decoration/boring_filter_column_style.dart';
 import 'decoration/boring_filter_style.dart';
 
 class BoringFilterTable<T> extends StatefulWidget {
@@ -73,7 +72,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
   late ScrollController _second;
 
   final ValueNotifier<int> _rowCount = ValueNotifier(0);
-  final ValueNotifier<bool> _isSelected = ValueNotifier(false);
+  final List<ValueNotifier<bool>> _isSelected = [];
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
   final Map<TableHeaderElement, bool> _buildHeaderList = {};
@@ -89,6 +88,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
 
     for (var e in widget.headerRow) {
       _buildHeaderList.addEntries({e: true}.entries);
+      _isSelected.add(ValueNotifier(false));
     }
     setBuilder();
   }
@@ -100,9 +100,10 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     super.dispose();
   }
 
-  void setBuilder({bool buildHeader = false, int? a}) {
+  void setBuilder({bool buildHeader = false, List<T>? items}) {
     filteredItems = [];
-    for (T item in widget.rawItems!) {
+
+    for (T item in items ?? widget.rawItems!) {
       bool isAcceptable = true;
       for (BoringFilter<T> filter in widget.filters!) {
         if (!filter.where(item, filter.valueController)) {
@@ -120,6 +121,10 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
       _rowBuilder =
           (context, index) => widget.toTableRow!(filteredItems[index]);
     } else if (buildHeader) {
+      _rowCount.notifyListeners();
+    } else if (items != null) {
+      _rowBuilder =
+          (context, index) => widget.toTableRow!(filteredItems[index]);
       _rowCount.notifyListeners();
     }
   }
@@ -187,14 +192,14 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: BoringFilterTableHeader(
-          decoration: widget.decoration,
-          isSelected: _isSelected,
-          rowHeader: _buildHeaderList,
-          rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
-          groupActions: widget.groupActions,
-          rowActions: widget.rowActions,
-          rawItems: filteredItems,
-        ),
+            decoration: widget.decoration,
+            isSelected: _isSelected,
+            rowHeader: _buildHeaderList,
+            rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
+            groupActions: widget.groupActions,
+            rowActions: widget.rowActions,
+            rawItems: filteredItems,
+            setBuilder: setBuilder),
       ),
     );
   }

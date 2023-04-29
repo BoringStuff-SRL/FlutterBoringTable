@@ -1,6 +1,7 @@
 import 'package:boring_table/src/filters/boring_filter.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+
 import '../../../utils/close_button.dart';
 import '../decoration/boring_filter_style.dart';
 

@@ -73,6 +73,8 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
 
   final ValueNotifier<int> _rowCount = ValueNotifier(0);
   final List<ValueNotifier<bool>> _isSelected = [];
+  final List<ValueNotifier<bool>> _isSelectedOrder = [];
+  final List<T> _orderItems = [];
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
   final Map<TableHeaderElement, bool> _buildHeaderList = {};
@@ -89,6 +91,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     for (var e in widget.headerRow) {
       _buildHeaderList.addEntries({e: true}.entries);
       _isSelected.add(ValueNotifier(false));
+      _isSelectedOrder.add(ValueNotifier(false));
     }
     setBuilder();
   }
@@ -100,10 +103,10 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     super.dispose();
   }
 
-  void setBuilder({bool buildHeader = false, List<T>? items}) {
+  void setBuilder({bool buildHeader = false}) {
     filteredItems = [];
 
-    for (T item in items ?? widget.rawItems!) {
+    for (T item in _orderItems.isEmpty ? widget.rawItems! : _orderItems) {
       bool isAcceptable = true;
       for (BoringFilter<T> filter in widget.filters!) {
         if (!filter.where(item, filter.valueController)) {
@@ -122,7 +125,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
           (context, index) => widget.toTableRow!(filteredItems[index]);
     } else if (buildHeader) {
       _rowCount.notifyListeners();
-    } else if (items != null) {
+    } else if (_orderItems.isNotEmpty) {
       _rowBuilder =
           (context, index) => widget.toTableRow!(filteredItems[index]);
       _rowCount.notifyListeners();
@@ -193,7 +196,9 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: BoringFilterTableHeader(
             decoration: widget.decoration,
+            orderItems: _orderItems,
             isSelected: _isSelected,
+            isSelectedOrder: _isSelectedOrder,
             rowHeader: _buildHeaderList,
             rowActionsColumnLabel: widget.rowActionsColumnLabel ?? "",
             groupActions: widget.groupActions,

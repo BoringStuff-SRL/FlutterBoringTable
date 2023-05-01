@@ -95,7 +95,7 @@ class PersonTable extends StatelessWidget {
           title: 'Nome',
           where: (element, controller) {
             if (controller.value != null) {
-              return (element).name == (controller.value);
+              return (element).name.contains(controller.value);
             }
             return true;
           },
@@ -187,26 +187,28 @@ class RowElementClass {
     return [
       TableHeaderElement.selectedAll(
           label: "ID",
-          icon: const Icon(Icons.check_box),
-          secondaryIcon: const Icon(Icons.check_box_outline_blank),
+          tableHeaderDecoration: TableHeaderDecoration(),
           showOnColumFilter: false,
+          orderBy: () async {
+            List<Person> a = items.toList();
+            a.sort((c, b) => c.id.compareTo(b.id));
+            return a;
+          },
           onPressed: (value) async {}),
       TableHeaderElement(
           label: "Name",
-          icon: Icon(Icons.arrow_drop_down),
-          secondaryIcon: Icon(Icons.arrow_drop_up_rounded),
-          orderBy: (value) async {
+          tableHeaderDecoration: TableHeaderDecoration(),
+          orderBy: () async {
             List<Person> a = items.toList();
             a.sort((c, b) => c.name.compareTo(b.name));
             return a;
           }),
       TableHeaderElement(
           label: "Surname",
-          icon: Icon(Icons.arrow_drop_down),
-          secondaryIcon: Icon(Icons.arrow_drop_up_rounded),
-          orderBy: (value) async {
+          tableHeaderDecoration: TableHeaderDecoration(),
+          orderBy: () async {
             List<Person> a = items.toList();
-            a.sort((c, b) => c.surname.compareTo(b.surname));
+            a.sort((c, b) => c.id.compareTo(b.id));
             return a;
           }),
     ];

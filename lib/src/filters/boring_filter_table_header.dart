@@ -5,8 +5,10 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
   const BoringFilterTableHeader(
       {super.key,
       this.decoration,
-      required this.rowHeader,
       this.rowActions,
+      required this.rowHeader,
+      required this.orderItems,
+      required this.isSelectedOrder,
       required this.setBuilder,
       required this.groupActions,
       required this.rowActionsColumnLabel,
@@ -20,7 +22,9 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
   final bool groupActions;
   final List<T> rawItems;
   final List<ValueNotifier<bool>> isSelected;
+  final List<ValueNotifier<bool>> isSelectedOrder;
   final Function setBuilder;
+  final List<T> orderItems;
 
   @override
   State<BoringFilterTableHeader> createState() =>
@@ -123,22 +127,44 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
       builder: (BuildContext context, bool value, Widget? child) {
         return Expanded(
             flex: key.flex,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  widget.isSelected[index].value = !value;
-                  key.onPressed!.call(widget.isSelected[index].value);
-                },
-                child: Row(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: !value
-                            ? key.secondaryIcon ??
-                                const Icon(Icons.check_box_outline_blank)
-                            : key.icon ?? const Icon(Icons.check_box)),
-                    Text(
+            child: Row(
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.isSelected[index].value = !value;
+                      key.onPressed!.call(widget.isSelected[index].value);
+                    },
+                    child: !value
+                        ? key.tableHeaderDecoration.unCheckIcon
+                        : key.tableHeaderDecoration.checkIcon,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (key.orderBy != null &&
+                          !widget.isSelectedOrder[index].value) {
+                        widget.orderItems.clear();
+                        (await key.orderBy?.call())?.forEach((e) {
+                          widget.orderItems.add(e);
+                        });
+
+                        widget.setBuilder.call();
+
+                        for (int i = 0; i < widget.isSelectedOrder.length; i++) {
+                          if (i != index) {
+                            widget.isSelectedOrder[i].value = false;
+                          } else {
+                            widget.isSelectedOrder[i].value = true;
+                          }
+                        }
+                      }
+                    },
+                    child: Text(
                       key.label,
                       textAlign: key.alignment,
                       style: widget.decoration?.headerTextStyle ??
@@ -146,9 +172,20 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
                             color: Colors.grey.shade800,
                           ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                if (key.orderBy != null)
+                  ValueListenableBuilder(
+                    valueListenable: widget.isSelectedOrder[index],
+                    builder: (BuildContext context, bool value, Widget? child) {
+                      return value
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: key.tableHeaderDecoration.orderIcon)
+                          : Container();
+                    },
+                  ),
+              ],
             ));
       },
     );
@@ -164,14 +201,19 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
               : SystemMouseCursors.basic,
           child: GestureDetector(
             onTap: () async {
-              if (key.orderBy != null && !widget.isSelected[index].value) {
-                widget.setBuilder.call(items: await key.orderBy?.call(false));
+              if (key.orderBy != null && !widget.isSelectedOrder[index].value) {
+                widget.orderItems.clear();
+                (await key.orderBy?.call())?.forEach((e) {
+                  widget.orderItems.add(e);
+                });
 
-                for (int i = 0; i < widget.isSelected.length; i++) {
+                widget.setBuilder.call();
+
+                for (int i = 0; i < widget.isSelectedOrder.length; i++) {
                   if (i != index) {
-                    widget.isSelected[i].value = false;
+                    widget.isSelectedOrder[i].value = false;
                   } else {
-                    widget.isSelected[i].value = true;
+                    widget.isSelectedOrder[i].value = true;
                   }
                 }
               }
@@ -187,12 +229,12 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
                 ),
                 if (key.orderBy != null)
                   ValueListenableBuilder(
-                    valueListenable: widget.isSelected[index],
+                    valueListenable: widget.isSelectedOrder[index],
                     builder: (BuildContext context, bool value, Widget? child) {
                       return value
                           ? Padding(
                               padding: const EdgeInsets.only(left: 5),
-                              child: key.icon)
+                              child: key.tableHeaderDecoration.orderIcon)
                           : Container();
                     },
                   ),

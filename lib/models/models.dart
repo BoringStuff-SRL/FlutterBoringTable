@@ -6,36 +6,45 @@ abstract class BoringTableRowElement {
 
 class TableHeaderElement<T> {
   final String label;
-  final Widget? icon;
-  final Widget? secondaryIcon;
   final int flex;
-  final TextAlign alignment;
   final bool isSelectAll;
-  final Future<void> Function(bool? value)? onPressed;
   final bool showOnColumFilter;
-  final Future<List<T>> Function(bool? value)? orderBy;
+  final Widget? icon;
+  final TextAlign alignment;
+  final TableHeaderDecoration tableHeaderDecoration;
+  final Future<void> Function(bool? value)? onPressed;
+  final Future<List<T>> Function()? orderBy;
 
-  TableHeaderElement({
+  const TableHeaderElement({
     required this.label,
+    required this.tableHeaderDecoration,
     this.icon,
-    this.secondaryIcon,
-    this.isSelectAll = false,
     this.showOnColumFilter = true,
     this.flex = 1,
     this.onPressed,
     this.alignment = TextAlign.start,
     this.orderBy,
-  });
+  }) : isSelectAll = false;
 
-  TableHeaderElement.selectedAll({
+  const TableHeaderElement.selectedAll({
     required this.label,
+    required this.tableHeaderDecoration,
     this.icon,
-    this.secondaryIcon,
     required this.onPressed,
     this.showOnColumFilter = true,
-    this.isSelectAll = true,
     this.flex = 1,
     this.orderBy,
     this.alignment = TextAlign.start,
-  });
+  }) : isSelectAll = true;
+}
+
+class TableHeaderDecoration {
+  final Widget checkIcon;
+  final Widget unCheckIcon;
+  final Widget orderIcon;
+
+  TableHeaderDecoration(
+      {this.checkIcon = const Icon(Icons.check_box),
+      this.unCheckIcon = const Icon(Icons.check_box_outline_blank),
+      this.orderIcon = const Icon(Icons.arrow_drop_down)});
 }

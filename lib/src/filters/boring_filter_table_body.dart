@@ -59,7 +59,8 @@ class BoringFilterTableBody<T> extends StatelessWidget {
 
   TableHeaderElement getColumnById(int index) {
     int x = 0;
-    TableHeaderElement column = TableHeaderElement(label: '');
+    TableHeaderElement column = TableHeaderElement(
+        label: '', tableHeaderDecoration: TableHeaderDecoration());
 
     headerRow.forEach((key, value) {
       if (x == index) {

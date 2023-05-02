@@ -1,8 +1,5 @@
 import 'package:boring_table/boring_table.dart';
-import 'package:boring_table/models/models.dart';
 import 'package:flutter/material.dart';
-
-import 'boring_table_decoration.dart';
 
 class BoringTableHeader extends StatefulWidget {
   const BoringTableHeader({
@@ -48,7 +45,7 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
   }
 
   void afterBuild() {
-    print("HERE");
+    //print("HERE");
     if (built) return;
     setState(() {
       built = true;
@@ -60,20 +57,16 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     final textTheme = Theme.of(context).textTheme;
 
-    return
-        // Second header row
-        ColoredBox(
+    return ColoredBox(
       color: widget.decoration?.headerColor ?? Theme.of(context).primaryColor,
       child: Padding(
         padding: widget.decoration?.headerPadding ??
-            const EdgeInsets.symmetric(
-              horizontal: 35.0,
-              vertical: 23.0,
-            ),
+            const EdgeInsets.symmetric(horizontal: 35.0, vertical: 23.0),
         child: Stack(
           children: [
-            Offstage(offstage: true, child: additionalActionsRow(context, 0)),
-            actualRow(textTheme),
+            if (widget.rowActions != null && widget.rowActions!.isNotEmpty)
+              Offstage(offstage: true, child: additionalActionsRow(context, 0)),
+            actualRow(textTheme)
           ],
         ),
       ),

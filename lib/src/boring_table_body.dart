@@ -1,7 +1,7 @@
 import 'package:boring_table/models/models.dart';
 import 'package:boring_table/src/boring_row_action.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'boring_table_decoration.dart';
 
@@ -58,15 +58,28 @@ class BoringTableBody extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: ListView.builder(
-        prototypeItem: rowCount > 0 ? itemAtPosition(context, 0) : null,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: rowCount,
         itemBuilder: ((context, index) {
-          return Container(
-              color: index.isEven
-                  ? decoration?.evenRowColor
-                  : decoration?.oddRowColor,
-              child: (itemAtPosition(context, index)));
+          return Slidable(
+            key: ValueKey(index),
+            startActionPane: ActionPane(
+                extentRatio: 0.35,
+                motion: const ScrollMotion(),
+                children: rowActions
+                    .map((e) => SlidableAction(
+                        foregroundColor: Colors.white,
+                        onPressed: (c) => e.onTap.call(index),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        label: e.buttonText,
+                        icon: (e.icon)?.icon))
+                    .toList()),
+            child: Container(
+                color: index.isEven
+                    ? decoration?.evenRowColor
+                    : decoration?.oddRowColor,
+                child: (itemAtPosition(context, index))),
+          );
         }),
       ),
     );
@@ -85,20 +98,14 @@ class BoringTableBody extends StatelessWidget {
               .asMap()
               .entries
               .map((e) => PopupMenuItem(
-                    onTap: () {
-                      e.value.onTap.call(index);
-                    },
+                    onTap: () => e.value.onTap.call(index),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        e.value.icon ?? Container(),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        Text(
-                          e.value.buttonText ?? "",
-                          style: actionGroupTextStyle,
-                        ),
+                        if (e.value.icon != null) e.value.icon!,
+                        if (e.value.icon != null) const SizedBox(width: 7),
+                        Text(e.value.buttonText ?? "",
+                            style: actionGroupTextStyle),
                       ],
                     ),
                   ))
@@ -130,16 +137,26 @@ class BoringTableBody extends StatelessWidget {
                     EdgeInsets.symmetric(
                         horizontal: 35.0, vertical: dense ? 30 : 8),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ...buildRow(context, index),
-                    groupActions
-                        ? _buildActionsGroup(context, index)
-                        : additionalActionsRow(context, index),
+                    Flexible(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...buildRow(context, index),
+                      ],
+                    )),
+                    if (rowActions.isNotEmpty)
+                      groupActions
+                          ? _buildActionsGroup(context, index)
+                          : additionalActionsRow(context, index),
                   ],
                 ),
               ),
-              if (decoration?.showDivider ?? false)
+              if ((decoration?.showDivider ?? false) &&
+                  decoration?.evenRowColor == null &&
+                  decoration?.oddRowColor == null)
                 Container(
                     color: decoration?.dividerColor ?? tx.dividerColor,
                     height: 0.7)

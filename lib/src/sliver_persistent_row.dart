@@ -3,17 +3,17 @@ import 'package:flutter/widgets.dart';
 class SliverPersistentRow extends SliverPersistentHeaderDelegate {
   const SliverPersistentRow({
     required this.child,
-    required this.heigth,
+    required this.height,
   });
 
   final Widget child;
-  final double heigth;
+  final double height;
 
   @override
-  double get maxExtent => heigth;
+  double get maxExtent => height;
 
   @override
-  double get minExtent => heigth;
+  double get minExtent => height;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>

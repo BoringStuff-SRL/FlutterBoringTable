@@ -22,7 +22,7 @@ class BoringTable extends StatefulWidget {
       this.widgetWhenEmpty,
       this.footer,
       this.rowActionsColumnLabel,
-      this.shape,
+      this.borderRadius,
       this.groupActionsMenuShape,
       this.cardElevation,
       this.actionGroupTextStyle,
@@ -40,7 +40,7 @@ class BoringTable extends StatefulWidget {
       required List<BoringTableRowElement> items,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
-      this.shape,
+      this.borderRadius,
       this.footer,
       this.cardElevation,
       this.groupActionsMenuShape,
@@ -61,7 +61,7 @@ class BoringTable extends StatefulWidget {
   final List<BoringRowAction> rowActions;
   final Widget? widgetWhenEmpty;
   final double? cardElevation;
-  final ShapeBorder? shape;
+  final double? borderRadius;
   final BoringTableDecoration? decoration;
   final Widget? footer;
   final bool groupActions;
@@ -109,10 +109,9 @@ class _BoringTableState extends State<BoringTable> {
         elevation: widget.cardElevation ?? 8,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.hardEdge,
-        shape: widget.shape ??
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
+        ),
         child: Column(
           children: [
             if (widget.title != null) widget.title!,

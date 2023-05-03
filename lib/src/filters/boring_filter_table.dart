@@ -93,7 +93,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
       _isSelected.add(ValueNotifier(false));
       _isSelectedOrder.add(ValueNotifier(false));
     }
-    setBuilder();
+    setBuilder(init: true);
   }
 
   @override
@@ -103,32 +103,38 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     super.dispose();
   }
 
-  void setBuilder({bool buildHeader = false}) {
+  void setBuilder({bool init = false, bool buildHeader = false}) {
     filteredItems = [];
 
-    for (T item in _orderItems.isEmpty ? widget.rawItems! : _orderItems) {
-      bool isAcceptable = true;
-      for (BoringFilter<T> filter in widget.filters!) {
-        if (!filter.where(item, filter.valueController)) {
-          isAcceptable = false;
-          break;
+    if (init) {
+      _rowCount.value = widget.rawItems?.length ?? 0;
+      _rowBuilder = (context, index) => _rowCount.value > 0
+          ? widget.toTableRow!(widget.rawItems![index])
+          : [];
+    } else {
+      for (T item in _orderItems.isEmpty ? widget.rawItems! : _orderItems) {
+        bool isAcceptable = true;
+        for (BoringFilter<T> filter in widget.filters!) {
+          if (!filter.where(item, filter.valueController)) {
+            isAcceptable = false;
+            break;
+          }
+        }
+        if (isAcceptable) {
+          filteredItems.add(item);
         }
       }
-      if (isAcceptable) {
-        filteredItems.add(item);
+      if (_rowCount.value != filteredItems.length) {
+        _rowCount.value = filteredItems.length;
+        _rowBuilder =
+            (context, index) => widget.toTableRow!(filteredItems[index]);
+      } else if (buildHeader) {
+        _rowCount.notifyListeners();
+      } else if (_orderItems.isNotEmpty) {
+        _rowBuilder =
+            (context, index) => widget.toTableRow!(filteredItems[index]);
+        _rowCount.notifyListeners();
       }
-    }
-
-    if (_rowCount.value != filteredItems.length) {
-      _rowCount.value = filteredItems.length;
-      _rowBuilder =
-          (context, index) => widget.toTableRow!(filteredItems[index]);
-    } else if (buildHeader) {
-      _rowCount.notifyListeners();
-    } else if (_orderItems.isNotEmpty) {
-      _rowBuilder =
-          (context, index) => widget.toTableRow!(filteredItems[index]);
-      _rowCount.notifyListeners();
     }
   }
 

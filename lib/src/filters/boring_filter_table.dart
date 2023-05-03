@@ -133,6 +133,12 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant BoringFilterTable<T> oldWidget) {
+    setBuilder();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: widget.cardElevation ?? 38,

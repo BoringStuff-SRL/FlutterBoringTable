@@ -26,10 +26,11 @@ class UniBouncingButton extends StatelessWidget {
         onTapDown: (details) {
           _isPressed.value = true;
         },
-        onTapUp: (details) async {
-          await onPressed?.call();
+        onTapUp: (details) {
+          _isPressed.value = false;
+          onPressed?.call();
         },
-        onLongPressEnd: (details) async {
+        onTapCancel: () {
           _isPressed.value = false;
         },
         child: ValueListenableBuilder(

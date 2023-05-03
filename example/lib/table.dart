@@ -49,6 +49,7 @@ class PersonTable extends StatelessWidget {
       },
       rawItems: userList,
       decoration: BoringTableDecoration(
+        prototypeItem: true,
           showDivider: true,
           evenRowColor: Colors.purple,
           oddRowColor: Colors.pink),

@@ -71,9 +71,10 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
   late ScrollController _first;
   late ScrollController _second;
 
-  final ValueNotifier<int> _rowCount = ValueNotifier(0);
+  final RowItems _rowCount = RowItems(0);
   final List<ValueNotifier<bool>> _isSelected = [];
-  final List<ValueNotifier<bool>> _isSelectedOrder = [];
+
+  final List<ValueNotifier<TableOrderState>> _isSelectedOrder = [];
   final List<T> _orderItems = [];
   late List<Widget> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
@@ -91,7 +92,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     for (var e in widget.headerRow) {
       _buildHeaderList.addEntries({e: true}.entries);
       _isSelected.add(ValueNotifier(false));
-      _isSelectedOrder.add(ValueNotifier(false));
+      _isSelectedOrder.add(ValueNotifier(TableOrderState.standard));
     }
     setBuilder();
   }
@@ -118,22 +119,15 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
         filteredItems.add(item);
       }
     }
-    if (_rowCount.value != filteredItems.length) {
-      _rowCount.value = filteredItems.length;
-      _rowBuilder =
-          (context, index) => widget.toTableRow!(filteredItems[index]);
-    } else if (buildHeader) {
-      _rowCount.notifyListeners();
-    } else if (_orderItems.isNotEmpty) {
-      _rowBuilder =
-          (context, index) => widget.toTableRow!(filteredItems[index]);
-      _rowCount.notifyListeners();
-    } else {
-      _rowCount.value = widget.rawItems?.length ?? 0;
-      _rowBuilder = (context, index) => _rowCount.value > 0
-          ? widget.toTableRow!(widget.rawItems![index])
-          : [];
+
+    if (filteredItems.isEmpty) {
+      _rowCount.value = 0;
+      _rowBuilder = (context, index) => [];
+      return;
     }
+
+    _rowCount.value = filteredItems.length;
+    _rowBuilder = (c, i) => widget.toTableRow!(filteredItems[i]);
   }
 
   @override
@@ -279,4 +273,19 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
           )
         ],
       );
+}
+
+class RowItems extends ValueNotifier<int> {
+  int _value = 0;
+
+  RowItems(super.value);
+
+  @override
+  int get value => _value;
+
+  @override
+  set value(int value) {
+    _value = value;
+    notifyListeners();
+  }
 }

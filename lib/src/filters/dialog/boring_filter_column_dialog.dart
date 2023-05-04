@@ -42,8 +42,8 @@ class BoringFilterColumnDialog extends StatelessWidget {
       content: SizedBox(
           width: 300,
           height: 300,
-          child: Column(
-            children: _generateRow(),
+          child: SingleChildScrollView(
+            child: Column(children: _generateRow()),
           )),
       actions: [
         TextButton(

@@ -2,7 +2,7 @@ import 'package:boring_table/boring_table.dart';
 import 'package:flutter/material.dart';
 
 class BoringFilterTableHeader<T> extends StatefulWidget {
-  const BoringFilterTableHeader(
+   BoringFilterTableHeader(
       {super.key,
       this.decoration,
       this.rowActions,
@@ -22,7 +22,7 @@ class BoringFilterTableHeader<T> extends StatefulWidget {
   final bool groupActions;
   final List<T> rawItems;
   final List<ValueNotifier<bool>> isSelected;
-  final List<ValueNotifier<bool>> isSelectedOrder;
+  final List<ValueNotifier<TableOrderState>> isSelectedOrder;
   final Function setBuilder;
   final List<T> orderItems;
 
@@ -146,22 +146,40 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () async {
-                      if (key.orderBy != null &&
-                          !widget.isSelectedOrder[index].value) {
+                      if (key.orderBy != null) {
                         widget.orderItems.clear();
                         (await key.orderBy?.call())?.forEach((e) {
                           widget.orderItems.add(e);
                         });
 
-                        widget.setBuilder.call();
-
-                        for (int i = 0; i < widget.isSelectedOrder.length; i++) {
+                        for (int i = 0;
+                            i < widget.isSelectedOrder.length;
+                            i++) {
                           if (i != index) {
-                            widget.isSelectedOrder[i].value = false;
+                            widget.isSelectedOrder[i].value =
+                                TableOrderState.standard;
+                          } else if (widget.isSelectedOrder[i].value ==
+                              TableOrderState.standard) {
+                            widget.isSelectedOrder[i].value =
+                                TableOrderState.asc;
+                          } else if (widget.isSelectedOrder[i].value ==
+                              TableOrderState.asc) {
+                            widget.isSelectedOrder[i].value =
+                                TableOrderState.disc;
+
+                            final reversed =
+                                widget.orderItems.reversed.toList();
+                            widget.orderItems.clear();
+                            for (var e in reversed) {
+                              widget.orderItems.add(e);
+                            }
                           } else {
-                            widget.isSelectedOrder[i].value = true;
+                            widget.isSelectedOrder[i].value =
+                                TableOrderState.standard;
+                            widget.orderItems.clear();
                           }
                         }
+                        widget.setBuilder.call();
                       }
                     },
                     child: Text(
@@ -177,12 +195,21 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
                 if (key.orderBy != null)
                   ValueListenableBuilder(
                     valueListenable: widget.isSelectedOrder[index],
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      return value
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: key.tableHeaderDecoration.orderIcon)
-                          : Container();
+                    builder: (BuildContext context, TableOrderState value,
+                        Widget? child) {
+                      if (value == TableOrderState.standard) {
+                        return Container();
+                      }
+
+                      if (value == TableOrderState.asc) {
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: key.tableHeaderDecoration.orderAscIcon);
+                      } else {
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: key.tableHeaderDecoration.orderDiscIcon);
+                      }
                     },
                   ),
               ],
@@ -201,21 +228,33 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
               : SystemMouseCursors.basic,
           child: GestureDetector(
             onTap: () async {
-              if (key.orderBy != null && !widget.isSelectedOrder[index].value) {
+              if (key.orderBy != null) {
                 widget.orderItems.clear();
                 (await key.orderBy?.call())?.forEach((e) {
                   widget.orderItems.add(e);
                 });
 
-                widget.setBuilder.call();
-
                 for (int i = 0; i < widget.isSelectedOrder.length; i++) {
                   if (i != index) {
-                    widget.isSelectedOrder[i].value = false;
+                    widget.isSelectedOrder[i].value = TableOrderState.standard;
+                  } else if (widget.isSelectedOrder[i].value ==
+                      TableOrderState.standard) {
+                    widget.isSelectedOrder[i].value = TableOrderState.asc;
+                  } else if (widget.isSelectedOrder[i].value ==
+                      TableOrderState.asc) {
+                    widget.isSelectedOrder[i].value = TableOrderState.disc;
+
+                    final reversed = widget.orderItems.reversed.toList();
+                    widget.orderItems.clear();
+                    for (var e in reversed) {
+                      widget.orderItems.add(e);
+                    }
                   } else {
-                    widget.isSelectedOrder[i].value = true;
+                    widget.isSelectedOrder[i].value = TableOrderState.standard;
+                    widget.orderItems.clear();
                   }
                 }
+                widget.setBuilder.call();
               }
             },
             child: Row(
@@ -230,12 +269,21 @@ class _BoringFilterTableHeaderState extends State<BoringFilterTableHeader> {
                 if (key.orderBy != null)
                   ValueListenableBuilder(
                     valueListenable: widget.isSelectedOrder[index],
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      return value
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: key.tableHeaderDecoration.orderIcon)
-                          : Container();
+                    builder: (BuildContext context, TableOrderState value,
+                        Widget? child) {
+                      if (value == TableOrderState.standard) {
+                        return Container();
+                      }
+
+                      if (value == TableOrderState.asc) {
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: key.tableHeaderDecoration.orderAscIcon);
+                      } else {
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: key.tableHeaderDecoration.orderDiscIcon);
+                      }
                     },
                   ),
               ],

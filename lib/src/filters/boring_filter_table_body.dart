@@ -98,11 +98,13 @@ class BoringFilterTableBody<T> extends StatelessWidget {
               startActionPane: rowActions.isNotEmpty
                   ? ActionPane(
                       motion: const DrawerMotion(),
+                      extentRatio: 0.35,
                       children: rowActions.map((e) {
                         count++;
                         return SlidableAction(
                             foregroundColor: Colors.white,
                             onPressed: (c) => e.onTap.call(rawItems[index]),
+                            autoClose: true,
                             backgroundColor: count % 2 == 0
                                 ? Theme.of(context)
                                     .colorScheme

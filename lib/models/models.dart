@@ -4,6 +4,8 @@ abstract class BoringTableRowElement {
   List<Widget> toTableRow();
 }
 
+enum TableOrderState { asc, disc, standard }
+
 class TableHeaderElement<T> {
   final String label;
   final int flex;
@@ -15,7 +17,9 @@ class TableHeaderElement<T> {
   final Future<void> Function(bool? value)? onPressed;
   final Future<List<T>> Function()? orderBy;
 
-  const TableHeaderElement({
+
+
+  TableHeaderElement({
     required this.label,
     required this.tableHeaderDecoration,
     this.icon,
@@ -26,7 +30,7 @@ class TableHeaderElement<T> {
     this.orderBy,
   }) : isSelectAll = false;
 
-  const TableHeaderElement.selectedAll({
+  TableHeaderElement.selectedAll({
     required this.label,
     required this.tableHeaderDecoration,
     this.icon,
@@ -41,10 +45,12 @@ class TableHeaderElement<T> {
 class TableHeaderDecoration {
   final Widget checkIcon;
   final Widget unCheckIcon;
-  final Widget orderIcon;
+  final Widget orderAscIcon;
+  final Widget orderDiscIcon;
 
   TableHeaderDecoration(
       {this.checkIcon = const Icon(Icons.check_box),
       this.unCheckIcon = const Icon(Icons.check_box_outline_blank),
-      this.orderIcon = const Icon(Icons.arrow_drop_down)});
+      this.orderAscIcon = const Icon(Icons.arrow_drop_down),
+      this.orderDiscIcon = const Icon(Icons.arrow_drop_up)});
 }

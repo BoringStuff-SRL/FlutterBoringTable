@@ -268,8 +268,8 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                   Theme.of(context).dividerColor,
               height: 0.7),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: widget.footer ?? Container(),
           )
         ],
       );

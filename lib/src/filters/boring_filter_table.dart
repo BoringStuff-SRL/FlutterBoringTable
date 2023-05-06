@@ -184,7 +184,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                                 )),
                           ),
                   ),
-                  widget.footer ?? _footer()
+                 _footer()
                 ],
               );
             },

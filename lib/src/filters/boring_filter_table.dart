@@ -184,7 +184,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                                 )),
                           ),
                   ),
-                  _footer()
+                  widget.footer ?? _footer()
                 ],
               );
             },
@@ -269,7 +269,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
               height: 0.7),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: widget.footer ?? Container(),
+            child: Container(),
           )
         ],
       );

@@ -59,7 +59,7 @@ class BoringFilterTable<T> extends StatefulWidget {
   final List<T>? rawItems;
   final BoringFilterStyle filterStyle;
   final BoringFilterColumnStyle filterColumnStyle;
-  final List<Widget> Function(T element)? toTableRow;
+  final Future<List<Widget>>  Function(T element)?  toTableRow;
 
   @override
   State<BoringFilterTable<T>> createState() => _BoringFilterTableState<T>();
@@ -76,7 +76,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
 
   final List<ValueNotifier<TableOrderState>> _isSelectedOrder = [];
   final List<T> _orderItems = [];
-  late List<Widget> Function(BuildContext context, int index) _rowBuilder;
+  late Future<List<Widget>> Function(BuildContext context, int index) _rowBuilder;
   late List<T> filteredItems;
   final Map<TableHeaderElement, bool> _buildHeaderList = {};
 
@@ -104,7 +104,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
     super.dispose();
   }
 
-  void setBuilder({bool buildHeader = false}) {
+  void setBuilder({bool buildHeader = false}) async {
     filteredItems = [];
 
     for (T item in _orderItems.isEmpty ? widget.rawItems! : _orderItems) {
@@ -122,12 +122,12 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
 
     if (filteredItems.isEmpty) {
       _rowCount.value = 0;
-      _rowBuilder = (context, index) => [];
+      _rowBuilder = (context, index) async => [];
       return;
     }
 
     _rowCount.value = filteredItems.length;
-    _rowBuilder = (c, i) => widget.toTableRow!(filteredItems[i]);
+    _rowBuilder = (c, i) async => await ( widget.toTableRow!(filteredItems[i])).then((value) => value);
   }
 
   @override

@@ -22,7 +22,8 @@ class BoringFilterTableBody<T> extends StatelessWidget {
 
   final double maxWidth;
   final List<T> rawItems;
-  final List<Widget> Function(BuildContext context, int index) rowBuilder;
+  final Future<List<Widget>> Function(BuildContext context, int index)
+      rowBuilder;
   final Map<TableHeaderElement, bool> headerRow;
   final int rowCount;
   final void Function(T)? onTap;
@@ -34,14 +35,14 @@ class BoringFilterTableBody<T> extends StatelessWidget {
   final Widget groupActionsWidget;
   final double? groupActionsMenuShape;
 
-  List<Widget> buildRow(BuildContext context, int index) {
-    return rowBuilder(context, index)
+  Future<List<Widget>> buildRow(BuildContext context, int index) async {
+    return await rowBuilder(context, index).then((value) => value
         .asMap()
         .entries
         .map((item) => canBuildColumn(item.key)
             ? Expanded(flex: getColumnById(item.key).flex, child: item.value)
             : Container())
-        .toList();
+        .toList());
   }
 
   bool canBuildColumn(int index) {
@@ -185,16 +186,26 @@ class BoringFilterTableBody<T> extends StatelessWidget {
                 padding: decoration?.rowPadding ??
                     EdgeInsets.symmetric(
                         horizontal: 35.0, vertical: dense ? 30 : 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ...buildRow(context, index),
-                    rowActions.isNotEmpty
-                        ? groupActions
-                            ? _buildActionsGroup(context, index)
-                            : additionalActionsRow(context, rawItems[index])
-                        : Container(),
-                  ],
+                child: FutureBuilder(
+                  future: buildRow(context, index),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Widget>> snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return Container();
+                    }
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ...snapshot.data!,
+                        rowActions.isNotEmpty
+                            ? groupActions
+                                ? _buildActionsGroup(context, index)
+                                : additionalActionsRow(context, rawItems[index])
+                            : Container(),
+                      ],
+                    );
+                  },
                 ),
               ),
               if ((decoration?.showDivider ?? false) &&

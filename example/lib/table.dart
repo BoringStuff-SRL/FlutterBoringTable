@@ -23,7 +23,7 @@ class PersonTable extends StatelessWidget {
           .tableHeader(),
       filterColumnStyle: BoringFilterColumnStyle(),
       rowActionsColumnLabel: "More",
-      toTableRow: (dynamic user) {
+      toTableRow: (dynamic user) async {
         return [
           ValueListenableBuilder(
             valueListenable: _isSelected,

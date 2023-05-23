@@ -184,7 +184,7 @@ class _BoringFilterTableState<T> extends State<BoringFilterTable<T>> {
                                 )),
                           ),
                   ),
-                 _footer()
+                  if (widget.footer != null) _footer()
                 ],
               );
             },

@@ -39,8 +39,9 @@ class BoringTableBody extends StatelessWidget {
           .asMap()
           .entries
           .map(
-            (item) =>
-                Expanded(flex: headerRow[item.key].flex, child: item.value),
+            (item) => Expanded(
+                flex: headerRow.isEmpty ? 1 : headerRow[item.key].flex,
+                child: item.value),
           )
           .toList();
 

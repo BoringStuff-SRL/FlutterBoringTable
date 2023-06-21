@@ -141,7 +141,7 @@ class _BoringTableState extends State<BoringTable> {
                       ),
                     ),
             ),
-            footer()
+            if (widget.footer != null) footer()
           ],
         ),
       );

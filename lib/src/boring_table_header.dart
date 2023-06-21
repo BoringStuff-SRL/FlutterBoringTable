@@ -73,7 +73,10 @@ class _BoringTableHeaderState extends State<BoringTableHeader> {
     );
   }
 
-  Row actualRow(TextTheme textTheme) {
+  Widget actualRow(TextTheme textTheme) {
+    if (widget.rowHeader.isEmpty) {
+      return Container();
+    }
     return Row(children: [
       ...widget.rowHeader
           .map(

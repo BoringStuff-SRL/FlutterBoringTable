@@ -95,6 +95,7 @@ class BoringFilterTableBody<T> extends StatelessWidget {
 
             return Slidable(
               key: ValueKey(index),
+              enabled: decoration?.enableSlideRow ?? true,
               startActionPane: rowActions.isNotEmpty
                   ? ActionPane(
                       motion: const DrawerMotion(),

@@ -16,6 +16,7 @@ class BoringTableDecoration {
       this.evenRowColor,
       this.oddRowColor,
       this.showDivider,
+      this.enableSlideRow = true,
       this.showColumnFilter = true,
       this.showSearchFiler = true,
       this.prototypeItem = true});
@@ -36,6 +37,7 @@ class BoringTableDecoration {
   final bool prototypeItem;
   final bool? showSearchFiler;
   final bool showColumnFilter;
+  final bool enableSlideRow;
 
   BoringTableDecoration copyWith(
       {Color? headerColor,

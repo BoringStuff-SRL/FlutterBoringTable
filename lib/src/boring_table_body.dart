@@ -63,7 +63,9 @@ class BoringTableBody extends StatelessWidget {
         itemCount: rowCount,
         itemBuilder: ((context, index) {
           return Slidable(
+
             key: ValueKey(index),
+            enabled: decoration?.enableSlideRow ?? true,
             startActionPane: ActionPane(
                 extentRatio: 0.35,
                 motion: const ScrollMotion(),

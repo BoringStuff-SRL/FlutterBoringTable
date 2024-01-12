@@ -53,6 +53,7 @@ class BoringTableDecoration {
       TextStyle? headerTextStyle,
       TextStyle? rowTextStyle,
       bool? showDivider,
+      bool? enableSlideRow,
       bool? showSearchFiler,
       bool? showColumnFilter,
       bool? prototypeItem}) {
@@ -70,6 +71,7 @@ class BoringTableDecoration {
         headerTextStyle: headerTextStyle ?? this.headerTextStyle,
         rowTextStyle: rowTextStyle ?? this.rowTextStyle,
         showDivider: showDivider ?? this.showDivider,
+        enableSlideRow: enableSlideRow ?? this.enableSlideRow,
         showColumnFilter: showColumnFilter ?? this.showColumnFilter,
         showSearchFiler: showSearchFiler ?? this.showSearchFiler,
         prototypeItem: prototypeItem ?? this.prototypeItem);
